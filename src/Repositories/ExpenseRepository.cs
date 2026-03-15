@@ -8,7 +8,7 @@ namespace Spentir.Repositories
     public class ExpenseRepository(SpentirDbContext context) : IExpenseRepository
     {
         private readonly SpentirDbContext _context = context;
-        
+
         public async Task AddAsync(Expense expense)
         {
             _context.Expenses.Add(expense);
@@ -23,14 +23,16 @@ namespace Spentir.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<List<Expense>> GetAsync()
+        public async Task<List<Expense>> GetAsync(Guid userId)
         {
-            return await _context.Expenses.ToListAsync();
+            IQueryable<Expense> query = _context.Expenses.Where(r => r.UserId == userId);
+
+            return await query.ToListAsync();
         }
- 
-        public async Task<Expense> GetByIdAsync(Guid expenseId)
+
+        public async Task<Expense> GetByIdAsync(Guid expenseId, Guid userId)
         {
-           return await _context.Expenses.FindAsync(expenseId) ?? throw new KeyNotFoundException($"Expense with Id: {expenseId} not found.");
+            return _context.Expenses.FirstOrDefault(e => e.Id == expenseId && e.UserId == userId) ?? throw new KeyNotFoundException($"Expense with Id: {expenseId} not found.");
         }
 
         public async Task DeleteAsync(Expense expense)
