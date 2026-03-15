@@ -8,8 +8,10 @@ namespace Spentir.Models
         public ExpenseCategory Category { get; private set; }
         public decimal Amount { get; private set; }
         public DateOnly CreatedAt { get; private set; }
+        public Guid UserId { get; private set; }
+        public User? User { get; private set; }
 
-        public Expense(ExpenseCategory category, decimal value)
+        public Expense(ExpenseCategory category, decimal value, Guid userId)
         {
             if (!Enum.IsDefined(typeof(ExpenseCategory), category)) throw new Exception($"Invalid resource type: {category}");
             if (value <= 0) throw new Exception("Amount must be greater than zero");
@@ -18,6 +20,7 @@ namespace Spentir.Models
             Category = category;
             Amount = value;
             CreatedAt = DateOnly.FromDateTime(DateTime.UtcNow);
+            UserId = userId;
         }
 
         public void Update(ExpenseCategory category, decimal value)

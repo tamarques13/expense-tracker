@@ -1,5 +1,6 @@
 using Spentir.Repositories.Interfaces;
 using Spentir.Services.Interfaces;
+using Spentir.ExceptionHelper;
 using Spentir.Models;
 using Spentir.DTOs;
 
@@ -8,9 +9,18 @@ namespace Spentir.Services
     public class ExpenseService(IExpenseRepository expenseRepository) : IExpenseService
     {
         private readonly IExpenseRepository _expenseRepository = expenseRepository;
-        public async Task<ExpenseDto> CreateExpenseAsync(CreateExpenseDto dto)
+
+        /// <summary>
+        /// Creates a new expense entry for the specified user. The method validates the
+        /// provided category, constructs the domain entity and persists it in the repository.
+        /// </summary>
+        /// <param name="dto">The data transfer object containing the expense details to create.</param>
+        /// <param name="userId">The identifier of the user who owns the expense.</param>
+        /// <exception cref="DomainException"> Thrown when the provided category is invalid or violates domain rules.</exception>
+
+        public async Task<ExpenseDto> CreateExpenseAsync(CreateExpenseDto dto, Guid userId)
         {
-            var expense = new Expense(Enum.Parse<ExpenseCategory>(dto.Category), dto.Amount);
+            var expense = new Expense(Enum.Parse<ExpenseCategory>(dto.Category), dto.Amount, userId);
 
             await _expenseRepository.AddAsync(expense);
 
@@ -22,9 +32,15 @@ namespace Spentir.Services
             };
         }
 
-        public async Task<List<ExpenseDto>> GetExpensesAsync()
+        /// <summary>
+        /// Retrieves all expenses associated with the specified user. The method queries the
+        /// repository and maps each domain entity to a corresponding data transfer object.
+        /// </summary>
+        /// <param name="userId">The identifier of the user whose expenses should be retrieved.</param>
+
+        public async Task<List<ExpenseDto>> GetExpensesAsync(Guid userId)
         {
-            var expenses = await _expenseRepository.GetAsync();
+            var expenses = await _expenseRepository.GetAsync(userId);
 
             var expensesDto = new List<ExpenseDto>();
 
@@ -34,25 +50,49 @@ namespace Spentir.Services
                 {
                     Id = e.Id,
                     Category = e.Category.ToString(),
-                    Amount = Math.Round(e.Amount, 2)
+                    Amount = e.Amount
                 });
             }
 
             return expensesDto;
         }
 
-        public async Task UpdateExpenseAsync(Guid expenseId, CreateExpenseDto dto)
+        /// <summary>
+        /// Updates an existing expense belonging to the specified user. The method loads the
+        /// expense from the repository, applies the updated values and persists the changes.
+        /// </summary>
+        /// <param name="expenseId">The identifier of the expense to update.</param>
+        /// <param name="dto">The data transfer object containing the updated expense details.</param>
+        /// <param name="userId">The identifier of the user who owns the expense.</param>
+        /// <exception cref="DomainException">
+        /// Thrown when the expense does not exist, does not belong to the user or the updated
+        /// values violate domain rules.
+        /// </exception>
+        /// <exception cref="KeyNotFoundException">Thrown when the expense with the specified Id is not found.</exception>
+
+        public async Task UpdateExpenseAsync(Guid expenseId, CreateExpenseDto dto, Guid userId)
         {
-            var expense = await _expenseRepository.GetByIdAsync(expenseId);
+            var expense = await _expenseRepository.GetByIdAsync(expenseId, userId);
 
             expense.Update(Enum.Parse<ExpenseCategory>(dto.Category), dto.Amount);
 
             await _expenseRepository.UpdateAsync(expense);
         }
 
-        public async Task DeleteExpenseAsync(Guid expenseId)
+        /// <summary>
+        /// Deletes an existing expense belonging to the specified user. The method ensures the
+        /// expense exists and is owned by the user before removing it from the repository.
+        /// </summary>
+        /// <param name="expenseId">The identifier of the expense to delete.</param>
+        /// <param name="userId">The identifier of the user who owns the expense.</param>
+        /// <exception cref="DomainException">
+        /// Thrown when the expense does not exist or does not belong to the user.
+        /// </exception>
+        /// <exception cref="KeyNotFoundException">Thrown when the expense with the specified Id is not found.</exception>
+
+        public async Task DeleteExpenseAsync(Guid expenseId, Guid userId)
         {
-            var expense = await _expenseRepository.GetByIdAsync(expenseId);
+            var expense = await _expenseRepository.GetByIdAsync(expenseId, userId);
 
             await _expenseRepository.DeleteAsync(expense);
         }

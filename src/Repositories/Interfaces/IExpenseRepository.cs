@@ -6,8 +6,8 @@ namespace Spentir.Repositories.Interfaces
     {
         Task AddAsync(Expense expense);
         Task UpdateAsync(Expense expense);
-        Task<List<Expense>> GetAsync();
-        Task<Expense> GetByIdAsync(Guid expenseId);
+        Task<List<Expense>> GetAsync(Guid userId);
+        Task<Expense> GetByIdAsync(Guid expenseId, Guid userId);
         Task DeleteAsync(Expense expense);
     }
 }

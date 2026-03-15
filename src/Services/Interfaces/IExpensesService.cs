@@ -4,10 +4,10 @@ namespace Spentir.Services.Interfaces
 {
     public interface IExpenseService
     {
-        Task<ExpenseDto> CreateExpenseAsync(CreateExpenseDto dto);
-        Task UpdateExpenseAsync(Guid expenseId, CreateExpenseDto dto);
-        Task<List<ExpenseDto>> GetExpensesAsync();
-        Task DeleteExpenseAsync(Guid expenseId);
+        Task<ExpenseDto> CreateExpenseAsync(CreateExpenseDto dto, Guid UserId);
+        Task UpdateExpenseAsync(Guid expenseId, CreateExpenseDto dto, Guid UserId);
+        Task<List<ExpenseDto>> GetExpensesAsync(Guid UserId);
+        Task DeleteExpenseAsync(Guid expenseId, Guid UserId);
 
     }
 }
