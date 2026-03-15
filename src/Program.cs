@@ -1,6 +1,10 @@
 using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
 using Spentir.Data;
+using Spentir.Services.Interfaces;
+using Spentir.Repositories.Interfaces;
+using Spentir.Services;
+using Spentir.Repositories;
 
 Env.Load();
 
@@ -17,9 +21,8 @@ builder.Services.AddControllers();
 
 builder.Services.AddCors(options => options.AddPolicy("AllowAll", builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()));
 
-// Examples
-// builder.Services.AddScoped<IResourceRepository, ResourceRepository>();
-// builder.Services.AddScoped<IResourceService, ResourceService>();
+builder.Services.AddScoped<IExpenseRepository, ExpenseRepository>();
+builder.Services.AddScoped<IExpenseService, ExpenseService>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
