@@ -40,9 +40,9 @@ namespace Spentir.Services
 
         public async Task<List<ExpenseDto>> GetExpensesAsync(Guid userId, DateOnly? date, bool isLastYear)
         {
-            if (!date.HasValue) throw new ArgumentException("Date is required.");
+            var targetDate = Utils.NormalizeDate(date ?? DateOnly.FromDateTime(DateTime.UtcNow));
 
-            (DateOnly start, DateOnly end) = isLastYear ? Utils.GetLastYearRange(date.Value) : Utils.GetMonthRange(date.Value);
+            (DateOnly start, DateOnly end) = isLastYear ? Utils.GetLastYearRange(targetDate) : Utils.GetMonthRange(targetDate);
 
             var expenses = await _expenseRepository.GetAsync(userId, start, end);
 

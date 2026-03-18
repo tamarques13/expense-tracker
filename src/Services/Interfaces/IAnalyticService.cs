@@ -7,7 +7,7 @@ namespace Spentir.Services.Interfaces
     {
         Task<MonthAnalyticsDto> GetMonthAnalyticsAsync(DateOnly? date, Guid userId);
         Task<YearAnalyticsDto> GetYearAnalyticsAsync(DateOnly? date, Guid userId);
-        Task<CategoryTrendDto> GetCategoryTrendAsync(ExpenseCategory category, DateOnly? date, Guid userId);
+        Task<CategoryTrendDto> GetCategoryTrendAsync(ExpenseCategory category, DateOnly? date, int range, Guid userId);
 
     }
 }
