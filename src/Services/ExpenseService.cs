@@ -1,6 +1,6 @@
 using Spentir.Repositories.Interfaces;
 using Spentir.Services.Interfaces;
-using Spentir.ExceptionHelper;
+using Spentir.Helpers;
 using Spentir.Models;
 using Spentir.DTOs;
 
@@ -38,9 +38,13 @@ namespace Spentir.Services
         /// </summary>
         /// <param name="userId">The identifier of the user whose expenses should be retrieved.</param>
 
-        public async Task<List<ExpenseDto>> GetExpensesAsync(Guid userId)
+        public async Task<List<ExpenseDto>> GetExpensesAsync(Guid userId, DateOnly? date, bool isLastYear)
         {
-            var expenses = await _expenseRepository.GetAsync(userId);
+            if (!date.HasValue) throw new ArgumentException("Date is required.");
+
+            (DateOnly start, DateOnly end) = isLastYear ? Utils.GetLastYearRange(date.Value) : Utils.GetMonthRange(date.Value);
+
+            var expenses = await _expenseRepository.GetAsync(userId, start, end);
 
             var expensesDto = new List<ExpenseDto>();
 

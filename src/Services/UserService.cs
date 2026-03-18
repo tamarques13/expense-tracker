@@ -2,7 +2,7 @@ using Spentir.Repositories.Interfaces;
 using Spentir.Services.Interfaces;
 using Spentir.Models;
 using Spentir.Security;
-using Spentir.ExceptionHelper;
+using Spentir.Helpers;
 using Spentir.DTOs;
 
 namespace Spentir.Services

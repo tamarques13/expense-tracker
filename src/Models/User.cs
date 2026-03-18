@@ -1,4 +1,4 @@
-using Spentir.ExceptionHelper;
+using Spentir.Helpers;
 
 namespace Spentir.Models
 {

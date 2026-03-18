@@ -41,7 +41,7 @@ namespace Spentir.Security
                 issuer: Environment.GetEnvironmentVariable("ISSUER"),
                 audience: Environment.GetEnvironmentVariable("AUDIENCE"),
                 claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(15),
+                expires: DateTime.UtcNow.AddHours(1),
                 signingCredentials: credentials);
 
             return new JwtSecurityTokenHandler().WriteToken(token); ;

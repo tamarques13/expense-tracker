@@ -1,4 +1,4 @@
-namespace Spentir.ExceptionHelper
+namespace Spentir.Helpers
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="DomainException"/> class
