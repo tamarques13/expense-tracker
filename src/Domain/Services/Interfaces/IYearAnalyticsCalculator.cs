@@ -1,6 +1,6 @@
-using Spentir.Domain.Models;
-using Spentir.DTOs;
-using Spentir.Models;
+using Spentir.Application.DTOs;
+using Spentir.Domain.Models.Entities;
+using Spentir.Domain.Models.ValueObjects;
 
 namespace Spentir.Domain.Services.Interfaces
 {
