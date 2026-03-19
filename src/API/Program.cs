@@ -1,9 +1,8 @@
+using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Microsoft.OpenApi.Any;
-using DotNetEnv;
 using Spentir.Infrastructure.Persistence.Configurations;
 using Spentir.Application.Services.Interfaces;
 using Spentir.Infrastructure.Persistence.Repositories.Interfaces;
