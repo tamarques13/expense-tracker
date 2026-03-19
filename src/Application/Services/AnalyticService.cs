@@ -2,7 +2,7 @@ using Spentir.Infrastructure.Persistence.Repositories.Interfaces;
 using Spentir.Application.Services.Interfaces;
 using Spentir.Domain.Services.Interfaces;
 using Spentir.Domain.Models.Entities;
-using Spentir.Application.DTOs;
+using Spentir.Application.DTOs.Analytics;
 using Spentir.Domain.Exceptions;
 using Spentir.Application.Mappers;
 
@@ -14,7 +14,7 @@ namespace Spentir.Application.Services
         ICategoryAggregateService aggregateService,
         ICategoryTrendCalculator categoryTrendCalculator,
         IMonthAnalyticsCalculator monthAnalyticsCalculator,
-        ITrendAnalyticsCalculator trendAnalyticsCalculator,
+        // ITrendAnalyticsCalculator trendAnalyticsCalculator,
         IYearAnalyticsCalculator yearAnalyticsCalculator
         ) : IAnalyticService
     {
@@ -23,7 +23,7 @@ namespace Spentir.Application.Services
         private readonly ICategoryAggregateService _aggregateService = aggregateService;
         private readonly ICategoryTrendCalculator _categoryTrendCalculator = categoryTrendCalculator;
         private readonly IMonthAnalyticsCalculator _monthAnalyticsCalculator = monthAnalyticsCalculator;
-        private readonly ITrendAnalyticsCalculator _trendAnalyticsCalculator = trendAnalyticsCalculator;
+        // private readonly ITrendAnalyticsCalculator _trendAnalyticsCalculator = trendAnalyticsCalculator;
         private readonly IYearAnalyticsCalculator _yearAnalyticsCalculator = yearAnalyticsCalculator;
 
         /// <summary>
@@ -51,11 +51,7 @@ namespace Spentir.Application.Services
 
             var categories = CategoryAnalyticsDtoBuilder.Build(grouped, totalSpent);
             CategoryAnalyticsDtoBuilder.ApplyPreviousMonthComparison(categories, groupedPrev);
-
-            var trendMetrics = _trendAnalyticsCalculator.Calculate(currentExpenses, previousExpenses);
-            var trend = TrendAnalyticsDtoBuilder.Build(trendMetrics);
-
-            var metrics = _monthAnalyticsCalculator.Calculate(targetDate, currentExpenses, totalSpent, categories, trend);
+            var metrics = _monthAnalyticsCalculator.Calculate(targetDate, currentExpenses, grouped, totalSpent, categories, currentExpenses, previousExpenses);
 
             return MonthAnalyticsDtoBuilder.Build(metrics, targetDate);
         }
@@ -76,8 +72,8 @@ namespace Spentir.Application.Services
             var targetDate = _dateRangeService.Normalize(date.Value);
 
             (DateOnly start, DateOnly end) = _dateRangeService.GetMonthRange(targetDate, 12);
-            var yearExpenses = (await _expenseRepository.GetAsync(userId, start, end)).ToList();
 
+            var yearExpenses = (await _expenseRepository.GetAsync(userId, start, end)).ToList();
             var totalSpent = yearExpenses.Sum(e => e.Amount);
 
             var grouped = _aggregateService.GroupByCategory(yearExpenses);
@@ -85,9 +81,9 @@ namespace Spentir.Application.Services
 
             var monthGrouped = _aggregateService.GroupExpensesByMonth(yearExpenses);
             var months = _dateRangeService.GetRollingMonths(start, 12);
-
             var monthly = MonthlyAnalyticsDtoBuilder.Build(totalSpent, monthGrouped, months);
-            var metrics = _yearAnalyticsCalculator.Calculate(yearExpenses, totalSpent, categories, monthly);
+
+            var metrics = _yearAnalyticsCalculator.Calculate(grouped, totalSpent, categories, monthly);
 
             return YearAnalyticsDtoBuilder.Build(targetDate, metrics);
         }

@@ -1,8 +1,9 @@
 namespace Spentir.Domain.Models.ValueObjects
 {
     public record CategoryTrendMetrics(
+        int TargetYear,
+        int TargetMonth,
         decimal CurrMonthAmount,
-        decimal OldestMonthAmount,
         decimal TotalSpent,
         decimal TotalCategorySpent,
         decimal HighestAmount,
@@ -13,4 +14,3 @@ namespace Spentir.Domain.Models.ValueObjects
         bool IsImproving
     );
 }
- 

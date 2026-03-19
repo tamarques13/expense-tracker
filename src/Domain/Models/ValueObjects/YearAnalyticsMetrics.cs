@@ -1,14 +1,14 @@
-using Spentir.Application.DTOs;
+using Spentir.Application.DTOs.Analytics;
 
 namespace Spentir.Domain.Models.ValueObjects
 {
     public record YearAnalyticsMetrics(
         decimal Total,
         decimal AverageMonthlySpent,
-        string HighestSpendingCategory,
         decimal HighestSpendingAmount,
-        string LowestSpendingCategory,
         decimal LowestSpendingAmount,
+        string HighestSpendingCategory,
+        string LowestSpendingCategory,
         List<CategoryYearAnalyticsDto> Categories,
         List<YearMonthsAnalyticsDto> Months
     );

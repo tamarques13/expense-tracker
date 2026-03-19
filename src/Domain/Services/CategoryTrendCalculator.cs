@@ -1,5 +1,5 @@
 using Spentir.Domain.Services.Interfaces;
-using Spentir.Application.DTOs;
+using Spentir.Application.DTOs.Analytics;
 using Spentir.Domain.Models.Entities;
 using Spentir.Domain.Models.ValueObjects;
 
@@ -15,21 +15,22 @@ namespace Spentir.Domain.Services
             var lowest = catExpenses.OrderBy(e => e.Amount).FirstOrDefault()?.Amount ?? 0;
 
             var currMonth = monthlyTotals.Last().Total;
-            var oldestMonth = monthlyTotals.First().Total;
+            var targetMonth = monthlyTotals.First().Total;
 
             decimal percentageChange;
 
-            if (oldestMonth == 0)
+            if (targetMonth == 0)
                 percentageChange = currMonth == 0 ? 0 : 100;
             else
-                percentageChange = Math.Round((currMonth - oldestMonth) / oldestMonth * 100, 2);
+                percentageChange = Math.Round((currMonth - targetMonth) / targetMonth * 100, 2);
 
             var multiplier = Math.Round(1 + (percentageChange / 100m), 2);
             var avgMonthly = Math.Round(totalCategorySpent / monthlyTotals.Count, 2);
 
             return new CategoryTrendMetrics(
+                TargetYear: monthlyTotals.First().Year,
+                TargetMonth: monthlyTotals.First().Month,
                 CurrMonthAmount: currMonth,
-                OldestMonthAmount: oldestMonth,
                 TotalSpent: totalSpent,
                 TotalCategorySpent: totalCategorySpent,
                 HighestAmount: highest,

@@ -1,5 +1,5 @@
 using Spentir.Domain.Models.Entities;
-using Spentir.Application.DTOs;
+using Spentir.Application.DTOs.Analytics;
 
 namespace Spentir.Application.Services.Interfaces
 {

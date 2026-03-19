@@ -38,7 +38,6 @@ builder.Services.AddScoped<IDateRangeService, DateRangeService>();
 builder.Services.AddScoped<ICategoryAggregateService, CategoryAggregateService>();
 builder.Services.AddScoped<ICategoryTrendCalculator, CategoryTrendCalculator>();
 builder.Services.AddScoped<IMonthAnalyticsCalculator, MonthAnalyticsCalculator>();
-builder.Services.AddScoped<ITrendAnalyticsCalculator, TrendAnalyticsCalculator>();
 builder.Services.AddScoped<IYearAnalyticsCalculator, YearAnalyticsCalculator>();
 
 builder.Services.AddEndpointsApiExplorer();

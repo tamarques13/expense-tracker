@@ -1,6 +1,6 @@
 using Spentir.Domain.Models.Entities;
 using Spentir.Domain.Models.ValueObjects;
-using Spentir.Application.DTOs;
+using Spentir.Application.DTOs.Analytics;
 
 namespace Spentir.Application.Mappers
 {
