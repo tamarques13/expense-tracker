@@ -46,7 +46,7 @@ namespace Spentir.DTOs
         public string LowestSpendingCategory { get; set; } = string.Empty;
         public decimal LowestSpendingAmount { get; set; }
         public List<CategoryYearAnalyticsDto> Categories { get; set; } = new();
-        public List<MonthlyAnalyticsDto> Months { get; set; } = new();
+        public List<YearMonthsAnalyticsDto> Months { get; set; } = new();
     }
 
     public class CategoryYearAnalyticsDto
@@ -57,7 +57,7 @@ namespace Spentir.DTOs
         public decimal Percentage { get; set; }
     }
 
-    public class MonthlyAnalyticsDto
+    public class YearMonthsAnalyticsDto
     {
         public int Year { get; set; }
         public int Month { get; set; }
@@ -74,7 +74,6 @@ namespace Spentir.DTOs
         public decimal TotalSpent { get; set; }
         public decimal HighestAmount { get; set; }
         public decimal LowestAmount { get; set; }
-        public decimal PercentageOfTotalYear { get; set; }
         public decimal PercentageChange { get; set; }
         public decimal Multiplier {get; set;}
         public bool IsImproving { get; set; }
