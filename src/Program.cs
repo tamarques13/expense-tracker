@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi.Any;
 using DotNetEnv;
 using Spentir.Data;
 using Spentir.Services.Interfaces;
@@ -9,6 +10,8 @@ using Spentir.Repositories.Interfaces;
 using Spentir.Services;
 using Spentir.Repositories;
 using Spentir.Middleware;
+using Spentir.Domain.Services.Interfaces;
+using Spentir.Domain.Services;
 
 Env.Load();
 
@@ -30,6 +33,14 @@ builder.Services.AddScoped<IExpenseRepository, ExpenseRepository>();
 builder.Services.AddScoped<IExpenseService, ExpenseService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IAnalyticService, AnalyticService>();
+
+builder.Services.AddScoped<IDateRangeService, DateRangeService>();
+builder.Services.AddScoped<ICategoryAggregateService, CategoryAggregateService>();
+builder.Services.AddScoped<ICategoryTrendCalculator, CategoryTrendCalculator>();
+builder.Services.AddScoped<IMonthAnalyticsCalculator, MonthAnalyticsCalculator>();
+builder.Services.AddScoped<ITrendAnalyticsCalculator, TrendAnalyticsCalculator>();
+builder.Services.AddScoped<IYearAnalyticsCalculator, YearAnalyticsCalculator>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>

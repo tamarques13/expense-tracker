@@ -1,15 +1,16 @@
+using Spentir.Domain.Services.Interfaces;
 using Spentir.Repositories.Interfaces;
 using Spentir.Services.Interfaces;
-using Spentir.ExceptionHelper;
+using Spentir.Helpers;
 using Spentir.Models;
 using Spentir.DTOs;
 
 namespace Spentir.Services
 {
-    public class ExpenseService(IExpenseRepository expenseRepository) : IExpenseService
+    public class ExpenseService(IExpenseRepository expenseRepository, IDateRangeService dateRangeService) : IExpenseService
     {
         private readonly IExpenseRepository _expenseRepository = expenseRepository;
-
+        private readonly IDateRangeService dateRangeService = dateRangeService;
         /// <summary>
         /// Creates a new expense entry for the specified user. The method validates the
         /// provided category, constructs the domain entity and persists it in the repository.
@@ -38,9 +39,13 @@ namespace Spentir.Services
         /// </summary>
         /// <param name="userId">The identifier of the user whose expenses should be retrieved.</param>
 
-        public async Task<List<ExpenseDto>> GetExpensesAsync(Guid userId)
+        public async Task<List<ExpenseDto>> GetExpensesAsync(Guid userId, DateOnly? date, bool isLastYear)
         {
-            var expenses = await _expenseRepository.GetAsync(userId);
+            var targetDate = dateRangeService.Normalize(date ?? DateOnly.FromDateTime(DateTime.UtcNow));
+
+            (DateOnly start, DateOnly end) = isLastYear ? dateRangeService.GetMonthRange(targetDate, 12) : dateRangeService.GetMonthRange(targetDate, 1);
+
+            var expenses = await _expenseRepository.GetAsync(userId, start, end);
 
             var expensesDto = new List<ExpenseDto>();
 

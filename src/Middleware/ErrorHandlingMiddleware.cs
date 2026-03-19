@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using Spentir.ExceptionHelper;
+using Spentir.Helpers;
 
 namespace Spentir.Middleware
 {

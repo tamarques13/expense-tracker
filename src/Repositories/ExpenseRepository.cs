@@ -23,16 +23,21 @@ namespace Spentir.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<List<Expense>> GetAsync(Guid userId)
+        public async Task<List<Expense>> GetAsync(Guid userId, DateOnly? start, DateOnly? end)
         {
             IQueryable<Expense> query = _context.Expenses.Where(r => r.UserId == userId);
+
+            if (start.HasValue && end.HasValue)
+            {
+                query = query.Where(r => r.CreatedAt >= start && r.CreatedAt < end);
+            }
 
             return await query.ToListAsync();
         }
 
         public async Task<Expense> GetByIdAsync(Guid expenseId, Guid userId)
         {
-            return _context.Expenses.FirstOrDefault(e => e.Id == expenseId && e.UserId == userId) ?? throw new KeyNotFoundException($"Expense with Id: {expenseId} not found.");
+            return await _context.Expenses.FirstOrDefaultAsync(e => e.Id == expenseId && e.UserId == userId) ?? throw new KeyNotFoundException($"Expense with Id: {expenseId} not found.");
         }
 
         public async Task DeleteAsync(Expense expense)

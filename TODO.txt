@@ -1,0 +1,7 @@
+1. Refactor Architeture -> With Application, Domain, Infra ...
+
+2. Check Builders files to if needed to do a service for this
+
+3. Write down buissness rules and features of the app
+    3.1 Subscriptions are auto inserted into calculations
+    3.2 Adds for maximun of 3 scans/month per free tier user
