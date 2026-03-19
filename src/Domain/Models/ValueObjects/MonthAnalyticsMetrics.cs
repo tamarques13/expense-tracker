@@ -1,5 +1,4 @@
-using Spentir.Application.DTOs;
-using Spentir.Domain.Models.Entities;
+using Spentir.Application.DTOs.Analytics;
 
 namespace Spentir.Domain.Models.ValueObjects
 {
@@ -8,9 +7,13 @@ namespace Spentir.Domain.Models.ValueObjects
         decimal AverageDailySpent,
         decimal MedianExpense,
         decimal LargestExpense,
-        string LargestExpenseCategoryName,
-        ExpenseCategory? LargestExpenseCategory,
+        string HighestExpenseCategoryName,
+        string LowestExpenseCategoryName,
         List<CategoryAnalyticsDto> Categories,
-        TrendAnalyticsDto Trend
+        decimal PreviousTotal,
+        decimal Change,
+        decimal MonthChange,
+        decimal Multiplier,
+        bool IsImproving
     );
 }

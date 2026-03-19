@@ -1,4 +1,4 @@
-using Spentir.Application.DTOs;
+using Spentir.Application.DTOs.Analytics;
 using Spentir.Domain.Models.ValueObjects;
 
 namespace Spentir.Application.Mappers
@@ -18,12 +18,18 @@ namespace Spentir.Application.Mappers
             return new YearAnalyticsDto
             {
                 Year = date.Year,
-                Total = metrics.Total,
-                AverageMonthlySpent = metrics.AverageMonthlySpent,
-                HighestSpendingCategory = metrics.HighestSpendingCategory,
-                HighestSpendingAmount = metrics.HighestSpendingAmount,
-                LowestSpendingCategory = metrics.LowestSpendingCategory,
-                LowestSpendingAmount = metrics.LowestSpendingAmount,
+                Amounts = new YearAmountsDto
+                {
+                    Total = metrics.Total,
+                    Average = metrics.AverageMonthlySpent,
+                    Highest = metrics.HighestSpendingAmount,
+                    Lowest = metrics.LowestSpendingAmount
+                },
+                SpendingCategory = new SpendingCategory
+                {
+                    Highest = metrics.HighestSpendingCategory,
+                    Lowest =  metrics.LowestSpendingCategory
+                },
                 Categories = metrics.Categories,
                 Months = metrics.Months
             };

@@ -2,7 +2,8 @@ using Spentir.Infrastructure.Persistence.Repositories.Interfaces;
 using Spentir.Application.Services.Interfaces;
 using Spentir.Domain.Services.Interfaces;
 using Spentir.Domain.Models.Entities;
-using Spentir.Application.DTOs;
+using Spentir.Domain.Models.ValueObjects;
+using Spentir.Application.DTOs.Analytics;
 using Spentir.Domain.Exceptions;
 using Spentir.Application.Mappers;
 
@@ -14,16 +15,15 @@ namespace Spentir.Application.Services
         ICategoryAggregateService aggregateService,
         ICategoryTrendCalculator categoryTrendCalculator,
         IMonthAnalyticsCalculator monthAnalyticsCalculator,
-        ITrendAnalyticsCalculator trendAnalyticsCalculator,
         IYearAnalyticsCalculator yearAnalyticsCalculator
         ) : IAnalyticService
     {
+        private readonly record struct DateRange(DateOnly Start, DateOnly End);
         private readonly IExpenseRepository _expenseRepository = expenseRepository;
         private readonly IDateRangeService _dateRangeService = dateRangeService;
         private readonly ICategoryAggregateService _aggregateService = aggregateService;
         private readonly ICategoryTrendCalculator _categoryTrendCalculator = categoryTrendCalculator;
         private readonly IMonthAnalyticsCalculator _monthAnalyticsCalculator = monthAnalyticsCalculator;
-        private readonly ITrendAnalyticsCalculator _trendAnalyticsCalculator = trendAnalyticsCalculator;
         private readonly IYearAnalyticsCalculator _yearAnalyticsCalculator = yearAnalyticsCalculator;
 
         /// <summary>
@@ -36,26 +36,28 @@ namespace Spentir.Application.Services
 
         public async Task<MonthAnalyticsDto> GetMonthAnalyticsAsync(DateOnly? date, Guid userId)
         {
-            if (!date.HasValue) throw new DomainException("Date is required.");
+            if (!date.HasValue)
+                throw new DomainException("Date is required.");
+
             var targetDate = _dateRangeService.Normalize(date.Value);
+            var (currentRange, previousRange) = GetMonthRanges(targetDate, 1);
 
-            (DateOnly currStart, DateOnly currEnd) = _dateRangeService.GetMonthRange(targetDate, 1);
-            (DateOnly prevStart, DateOnly prevEnd) = _dateRangeService.GetMonthRange(_dateRangeService.GetPreviousMonth(targetDate), 1);
-
-            var currentExpenses = (await _expenseRepository.GetAsync(userId, currStart, currEnd)).ToList();
-            var previousExpenses = (await _expenseRepository.GetAsync(userId, prevStart, prevEnd)).ToList();
+            var currentExpenses = await LoadExpensesAsync(userId, currentRange);
+            var previousExpenses = await LoadExpensesAsync(userId, previousRange);
 
             var totalSpent = currentExpenses.Sum(e => e.Amount);
-            var grouped = _aggregateService.GroupByCategory(currentExpenses);
-            var groupedPrev = _aggregateService.GroupByCategorySimple(previousExpenses);
 
-            var categories = CategoryAnalyticsDtoBuilder.Build(grouped, totalSpent);
-            CategoryAnalyticsDtoBuilder.ApplyPreviousMonthComparison(categories, groupedPrev);
+            var currentCategoryGroups = _aggregateService.GroupByCategory(currentExpenses);
+            var previousCategoryGroups = _aggregateService.GroupByCategorySimple(previousExpenses);
 
-            var trendMetrics = _trendAnalyticsCalculator.Calculate(currentExpenses, previousExpenses);
-            var trend = TrendAnalyticsDtoBuilder.Build(trendMetrics);
+            var categories = BuildCategoryAnalytics(currentCategoryGroups, previousCategoryGroups, totalSpent);
 
-            var metrics = _monthAnalyticsCalculator.Calculate(targetDate, currentExpenses, totalSpent, categories, trend);
+            var metrics = _monthAnalyticsCalculator.Calculate(
+                targetDate,
+                currentExpenses,
+                currentCategoryGroups,
+                totalSpent, categories,
+                previousExpenses);
 
             return MonthAnalyticsDtoBuilder.Build(metrics, targetDate);
         }
@@ -72,22 +74,27 @@ namespace Spentir.Application.Services
 
         public async Task<YearAnalyticsDto> GetYearAnalyticsAsync(DateOnly? date, Guid userId)
         {
-            if (!date.HasValue) throw new DomainException("Date is required.");
-            var targetDate = _dateRangeService.Normalize(date.Value);
+            if (!date.HasValue)
+                throw new DomainException("Date is required.");
 
-            (DateOnly start, DateOnly end) = _dateRangeService.GetMonthRange(targetDate, 12);
-            var yearExpenses = (await _expenseRepository.GetAsync(userId, start, end)).ToList();
+            var targetDate = _dateRangeService.Normalize(date.Value);
+            var yearRange = GetRange(targetDate, 12);
+
+            var yearExpenses = await LoadExpensesAsync(userId, yearRange);
 
             var totalSpent = yearExpenses.Sum(e => e.Amount);
 
-            var grouped = _aggregateService.GroupByCategory(yearExpenses);
-            var categories = CategoryYearAnalyticsDtoBuilder.Build(grouped, totalSpent);
+            var categoryGroups = _aggregateService.GroupByCategory(yearExpenses);
+            var expensesGroups = _aggregateService.GroupExpensesByMonth(yearExpenses);
 
-            var monthGrouped = _aggregateService.GroupExpensesByMonth(yearExpenses);
-            var months = _dateRangeService.GetRollingMonths(start, 12);
+            var categories = CategoryYearAnalyticsDtoBuilder.Build(categoryGroups, totalSpent);
+            var monthlyAnalytics = BuildMonthlyAnalytics(yearRange, 12, totalSpent, expensesGroups);
 
-            var monthly = MonthlyAnalyticsDtoBuilder.Build(totalSpent, monthGrouped, months);
-            var metrics = _yearAnalyticsCalculator.Calculate(yearExpenses, totalSpent, categories, monthly);
+            var metrics = _yearAnalyticsCalculator.Calculate(
+                categoryGroups,
+                totalSpent,
+                categories,
+                monthlyAnalytics);
 
             return YearAnalyticsDtoBuilder.Build(targetDate, metrics);
         }
@@ -106,28 +113,64 @@ namespace Spentir.Application.Services
 
         public async Task<CategoryTrendDto> GetCategoryTrendAsync(ExpenseCategory category, DateOnly? date, int range, Guid userId)
         {
-            if (!date.HasValue) throw new DomainException("Date is required.");
-            if (range < 2) throw new DomainException("Range must be greater than 1");
+            if (!date.HasValue)
+                throw new DomainException("Date is required.");
+            if (range < 2)
+                throw new DomainException("Range must be greater than 1");
 
             var targetDate = _dateRangeService.Normalize(date.Value);
+            var monthRange = GetRange(targetDate, range);
 
-            (DateOnly start, DateOnly end) = _dateRangeService.GetMonthRange(targetDate, range);
+            var monthExpenses = await LoadExpensesAsync(userId, monthRange);
+            var categoryExpenses = monthExpenses.Where(e => e.Category == category).ToList();
 
-            var lastMonthsExpenses = (await _expenseRepository.GetAsync(userId, start, end)).ToList();
+            var total = monthExpenses.Sum(e => e.Amount);
+            var categoryTotal = monthExpenses.Where(e => e.Category == category).Sum(e => e.Amount);
+            
+            var expensesGroups = _aggregateService.GroupExpensesByMonth(categoryExpenses);
 
-            var totalLastMonthsSpent = lastMonthsExpenses.Sum(e => e.Amount);
-            var totalCatSpent = lastMonthsExpenses.Where(e => e.Category == category).Sum(e => e.Amount);
+            var monthlyAnalytics = BuildMonthlyAnalytics(monthRange, range, total, expensesGroups);
 
-            var lastMonthsCatExpenses = lastMonthsExpenses.Where(e => e.Category == category).ToList();
-
-            var monthGrouped = _aggregateService.GroupExpensesByMonth(lastMonthsCatExpenses);
-            var months = _dateRangeService.GetRollingMonths(start, range);
-
-            var monthlyTotals = MonthlyAnalyticsDtoBuilder.Build(totalLastMonthsSpent, monthGrouped, months);
-
-            var metrics = _categoryTrendCalculator.Calculate(lastMonthsExpenses, category, monthlyTotals, totalCatSpent, totalLastMonthsSpent);
+            var metrics = _categoryTrendCalculator.Calculate(
+                monthExpenses, 
+                category, 
+                monthlyAnalytics, 
+                categoryTotal, 
+                total);
 
             return CategoryTrendDtoBuilder.Build(metrics, category);
+        }
+
+        private (DateRange current, DateRange previous) GetMonthRanges(DateOnly targetDate, int range)
+        {
+            var (currStart, currEnd) = _dateRangeService.GetMonthRange(targetDate, range);
+            var (prevStart, prevEnd) = _dateRangeService.GetMonthRange(_dateRangeService.GetPreviousMonth(targetDate), range);
+
+            return (new DateRange(currStart, currEnd), new DateRange(prevStart, prevEnd));
+        }
+
+        private DateRange GetRange(DateOnly date, int months)
+        {
+            var (start, end) = _dateRangeService.GetMonthRange(date, months);
+            return new DateRange(start, end);
+        }
+
+        private async Task<List<Expense>> LoadExpensesAsync(Guid userId, DateRange range)
+        {
+            return (await _expenseRepository.GetAsync(userId, range.Start, range.End)).ToList();
+        }
+
+        private static List<CategoryAnalyticsDto> BuildCategoryAnalytics(IDictionary<ExpenseCategory, CategoryAggregate> current, IDictionary<ExpenseCategory, decimal> previous, decimal totalSpent)
+        {
+            var categories = CategoryAnalyticsDtoBuilder.Build(current, totalSpent);
+            CategoryAnalyticsDtoBuilder.ApplyPreviousMonthComparison(categories, previous);
+            return categories;
+        }
+
+        private List<YearMonthsAnalyticsDto> BuildMonthlyAnalytics(DateRange yearRange, int range, decimal totalSpent, Dictionary<(int Year, int Month), decimal> expensesGroup)
+        {
+            var months = _dateRangeService.GetRollingMonths(yearRange.Start, range);
+            return MonthlyAnalyticsDtoBuilder.Build(totalSpent, expensesGroup, months);
         }
     }
 }

@@ -1,4 +1,4 @@
-using Spentir.Application.DTOs;
+using Spentir.Application.DTOs.Analytics;
 
 namespace Spentir.Application.Mappers
 {

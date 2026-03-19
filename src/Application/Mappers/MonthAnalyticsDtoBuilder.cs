@@ -1,4 +1,4 @@
-using Spentir.Application.DTOs;
+using Spentir.Application.DTOs.Analytics;
 using Spentir.Domain.Models.ValueObjects;
 
 namespace Spentir.Application.Mappers
@@ -19,14 +19,27 @@ namespace Spentir.Application.Mappers
             {
                 Year = date.Year,
                 Month = date.Month,
-                Total = metrics.Total,
-                AverageDailySpent = metrics.AverageDailySpent,
-                MedianExpense = metrics.MedianExpense,
-                LargestExpense = metrics.LargestExpense,
-                LargestExpenseCategoryName = metrics.LargestExpenseCategoryName,
-                LargestExpenseCategory = metrics.LargestExpenseCategory,
+                Amounts = new MonthAmountsDto
+                {
+                    Total = metrics.Total,
+                    AverageDaily = metrics.AverageDailySpent,
+                    Median = metrics.MedianExpense,
+                    Largest = metrics.LargestExpense,
+                },
+                SpendingCategory = new SpendingCategory
+                {
+                    Highest = metrics.HighestExpenseCategoryName,
+                    Lowest = metrics.LowestExpenseCategoryName
+                },
                 Categories = metrics.Categories,
-                Trend = metrics.Trend
+                Trend = new TrendAnalyticsDto
+                {
+                    PreviousMonthTotal = metrics.PreviousTotal,
+                    MonthChange = metrics.Change,
+                    MonthPercentageChange = metrics.MonthChange,
+                    Multiplier = metrics.Multiplier,
+                    IsImproving = metrics.IsImproving
+                }
             };
         }
     }

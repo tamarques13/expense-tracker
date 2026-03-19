@@ -1,9 +1,3 @@
-1. Refactor Architeture -> With Application, Domain, Infra ...
-
-2. Check Mappers files to if needed to do a service for this
-
-3. Write down buissness rules and features of the app
-    3.1 Subscriptions are auto inserted into calculations
-    3.2 Adds for maximun of 3 scans/month per free tier user
-
-4. Add some information on the GET analytics category about the month range
+- Write down buissness rules and features of the app
+    - Subscriptions are auto inserted into calculations
+    - Adds for maximun of 3 scans/month per free tier user

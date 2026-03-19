@@ -1,6 +1,6 @@
 using Spentir.Domain.Models.Entities;
 using Spentir.Domain.Models.ValueObjects;
-using Spentir.Application.DTOs;
+using Spentir.Application.DTOs.Analytics;
 
 namespace Spentir.Application.Mappers
 {
@@ -21,14 +21,25 @@ namespace Spentir.Application.Mappers
             {
                 CategoryName = category.ToString(),
                 Category = category,
-                CurrMonthAmount = metrics.CurrMonthAmount,
-                AverageMonthlySpent = metrics.AverageMonthlySpent,
-                TotalSpent = metrics.TotalCategorySpent,
-                HighestAmount = metrics.HighestAmount,
-                LowestAmount = metrics.LowestAmount,
-                PercentageChange = metrics.PercentageChange,
-                Multiplier = metrics.Multiplier,
-                IsImproving = metrics.IsImproving
+                Period = new PeriodDto
+                {
+                    Year = metrics.TargetYear,
+                    Month = metrics.TargetMonth
+                },
+                Amounts = new CategoryTrendAmountsDto
+                {
+                    Current = metrics.CurrMonthAmount,
+                    Average = metrics.AverageMonthlySpent,
+                    Total = metrics.TotalCategorySpent,
+                    Highest = metrics.HighestAmount,
+                    Lowest = metrics.LowestAmount
+                },
+                Metrics = new CategoryTrendMetricsDto
+                {
+                    PercentageChange = metrics.PercentageChange,
+                    Multiplier = metrics.Multiplier,
+                    IsImproving = metrics.IsImproving
+                }
             };
         }
     }

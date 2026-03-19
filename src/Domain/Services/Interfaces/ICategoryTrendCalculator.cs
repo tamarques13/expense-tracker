@@ -1,4 +1,4 @@
-using Spentir.Application.DTOs;
+using Spentir.Application.DTOs.Analytics;
 using Spentir.Domain.Models.Entities;
 using Spentir.Domain.Models.ValueObjects;
 
