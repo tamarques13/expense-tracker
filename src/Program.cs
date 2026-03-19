@@ -4,12 +4,12 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Microsoft.OpenApi.Any;
 using DotNetEnv;
-using Spentir.Data;
-using Spentir.Services.Interfaces;
-using Spentir.Repositories.Interfaces;
-using Spentir.Services;
-using Spentir.Repositories;
-using Spentir.Middleware;
+using Spentir.Infrastructure.Persistence.Configurations;
+using Spentir.Application.Services.Interfaces;
+using Spentir.Infrastructure.Persistence.Repositories.Interfaces;
+using Spentir.Application.Services;
+using Spentir.Infrastructure.Persistence.Repositories;
+using Spentir.API.Middleware;
 using Spentir.Domain.Services.Interfaces;
 using Spentir.Domain.Services;
 
