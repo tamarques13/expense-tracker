@@ -7,7 +7,7 @@ namespace Spentir.Domain.Services
 {
     public class MonthAnalyticsCalculator : IMonthAnalyticsCalculator
     {
-        public MonthAnalyticsMetrics Calculate(DateOnly date, List<Expense> expenses, Dictionary<ExpenseCategory, CategoryAggregate> grouped, decimal totalSpent, List<CategoryAnalyticsDto> categories, IEnumerable<Expense> current, IEnumerable<Expense> previous)
+        public MonthAnalyticsMetrics Calculate(DateOnly date, List<Expense> expenses, Dictionary<ExpenseCategory, CategoryAggregate> grouped, decimal totalSpent, List<CategoryAnalyticsDto> categories, IEnumerable<Expense> previous)
         {
             var sortedAmounts = expenses.Select(e => e.Amount).OrderBy(x => x).ToList();
             var median = sortedAmounts.Count == 0 ? 0 : sortedAmounts[sortedAmounts.Count / 2];
@@ -17,7 +17,7 @@ namespace Spentir.Domain.Services
             var lowest = grouped.OrderBy(e => e.Value.Total).FirstOrDefault();
             var average = Math.Round(totalSpent / DateTime.DaysInMonth(date.Year, date.Month), 2);
 
-            var currentTotal = current.Sum(e => e.Amount);
+            var currentTotal = expenses.Sum(e => e.Amount);
             var previousTotal = previous.Sum(e => e.Amount);
 
             var change = currentTotal - previousTotal;

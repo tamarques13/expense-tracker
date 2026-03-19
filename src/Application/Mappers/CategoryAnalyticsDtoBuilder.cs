@@ -15,7 +15,7 @@ namespace Spentir.Application.Mappers
         /// <param name="grouped">The aggregated category metrics for the current month.</param>
         /// <param name="totalSpent">The total amount spent in the current month.</param>
 
-        public static List<CategoryAnalyticsDto> Build(Dictionary<ExpenseCategory, CategoryAggregate> grouped, decimal totalSpent)
+        public static List<CategoryAnalyticsDto> Build(IDictionary<ExpenseCategory, CategoryAggregate> grouped, decimal totalSpent)
         {
             return Enum.GetValues<ExpenseCategory>().Select(c =>
                 {
@@ -42,11 +42,11 @@ namespace Spentir.Application.Mappers
         /// <param name="categories">The category DTOs to enrich with comparison data.</param>
         /// <param name="previousExpenses">The expenses from the previous month.</param>
 
-        public static void ApplyPreviousMonthComparison(List<CategoryAnalyticsDto> categories, Dictionary<ExpenseCategory, decimal> groupedPrev)
+        public static void ApplyPreviousMonthComparison(List<CategoryAnalyticsDto> categories, IDictionary<ExpenseCategory, decimal> previous)
         {
             foreach (var c in categories)
             {
-                groupedPrev.TryGetValue(c.Category, out var prevTotal);
+                previous.TryGetValue(c.Category, out var prevTotal);
                 c.PreviousMonthTotal = prevTotal;
                 c.LastMonthChange = c.Total - prevTotal;
             }

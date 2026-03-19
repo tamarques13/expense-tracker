@@ -12,7 +12,6 @@ namespace Spentir.Domain.Services.Interfaces
             Dictionary<ExpenseCategory, CategoryAggregate> grouped,
             decimal totalSpent,
             List<CategoryAnalyticsDto> categories,
-            IEnumerable<Expense> current,
             IEnumerable<Expense> previous
         );
     }
