@@ -42,7 +42,7 @@ namespace Spentir.API.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [HttpPut]
+        [HttpPut("id")]
         public async Task<IActionResult> UpdateExpense(Guid Id, CreateExpenseDto dto)
         {
             await _expenseService.UpdateExpenseAsync(Id, dto, Guid.Parse(UserId));
@@ -55,7 +55,7 @@ namespace Spentir.API.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [HttpDelete]
+        [HttpDelete("id")]
         public async Task<IActionResult> DeleteExpense(Guid expenseId)
         {
             await _expenseService.DeleteExpenseAsync(expenseId, Guid.Parse(UserId));

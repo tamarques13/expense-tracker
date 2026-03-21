@@ -7,6 +7,7 @@ namespace Spentir.Infrastructure.Persistence.Configurations
     {
         public DbSet<Expense> Expenses { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<Subscription> Subscriptions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -16,8 +17,17 @@ namespace Spentir.Infrastructure.Persistence.Configurations
             .HasForeignKey(e => e.UserId)
             .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<Subscription>()
+            .HasOne(e => e.User)
+            .WithMany(e => e.Subscriptions)
+            .HasForeignKey(e => e.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<Expense>()
            .HasIndex(r => new { r.UserId, r.CreatedAt });
+
+            modelBuilder.Entity<Subscription>()
+            .HasIndex(r => new { r.UserId });
         }
     }
 }

@@ -28,7 +28,8 @@ namespace Spentir.Application.Services
             {
                 Id = expense.Id,
                 Category = expense.Category.ToString(),
-                Amount = expense.Amount
+                Amount = expense.Amount,
+                CreatedAt = expense.CreatedAt
             };
         }
 
@@ -54,7 +55,8 @@ namespace Spentir.Application.Services
                 {
                     Id = e.Id,
                     Category = e.Category.ToString(),
-                    Amount = e.Amount
+                    Amount = e.Amount,
+                    CreatedAt = e.CreatedAt
                 });
             }
 

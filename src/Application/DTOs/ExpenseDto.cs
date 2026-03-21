@@ -5,6 +5,7 @@ namespace Spentir.Application.DTOs
         public Guid Id { get; set; }
         public string Category { get; set; } = string.Empty;
         public decimal Amount { get; set; }
+        public DateOnly CreatedAt { get; set; }
     }
 
     public class CreateExpenseDto

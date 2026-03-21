@@ -32,7 +32,7 @@ namespace Spentir.Infrastructure.Persistence.Repositories
                 query = query.Where(r => r.CreatedAt >= start && r.CreatedAt < end);
             }
 
-            return await query.ToListAsync();
+            return await query.OrderByDescending(e => e.CreatedAt).ToListAsync();
         }
 
         public async Task<Expense> GetByIdAsync(Guid expenseId, Guid userId)

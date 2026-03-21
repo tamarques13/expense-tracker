@@ -1,6 +1,8 @@
+using Spentir.Domain.Exceptions;
+
 namespace Spentir.Domain.Models.Entities
 {
-    public enum ExpenseCategory { Food, Groceries, Transport, Housing, Utilities, Health, Entertainment, Shopping, Subscriptions, Other }
+    public enum ExpenseCategory { Food, Groceries, Transport, Housing, Utilities, Health, Entertainment, Shopping, Other }
     public class Expense
     {
         public Expense() { }
@@ -13,8 +15,10 @@ namespace Spentir.Domain.Models.Entities
 
         public Expense(ExpenseCategory category, decimal value, Guid userId)
         {
-            if (!Enum.IsDefined(typeof(ExpenseCategory), category)) throw new Exception($"Invalid resource type: {category}");
-            if (value <= 0) throw new Exception("Amount must be greater than zero");
+            if (!Enum.IsDefined(typeof(ExpenseCategory), category))
+                throw new DomainException($"Invalid resource type: {category}");
+            if (value <= 0)
+                throw new DomainException("Amount must be greater than zero");
 
             Id = Guid.NewGuid();
             Category = category;
@@ -25,8 +29,10 @@ namespace Spentir.Domain.Models.Entities
 
         public void Update(ExpenseCategory category, decimal value)
         {
-            if (!Enum.IsDefined(typeof(ExpenseCategory), category)) throw new Exception($"Invalid resource type: {category}");
-            if (value <= 0) throw new Exception("Amount must be greater than zero");
+            if (!Enum.IsDefined(typeof(ExpenseCategory), category))
+                throw new Exception($"Invalid resource type: {category}");
+            if (value <= 0)
+                throw new Exception("Amount must be greater than zero");
 
             Category = category;
             Amount = value;

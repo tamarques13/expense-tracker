@@ -25,17 +25,8 @@ namespace Spentir.Infrastructure.Security
 
         public static string GenerateBearerToken(User user)
         {
-            var secretKey = Environment.GetEnvironmentVariable("SECRET_KEY") ?? throw new InvalidOperationException("SECRET_KEY environment variable is not set.");
-            var securityKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(secretKey));
-            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-
-            var claims = new List<Claim>
-            {
-                new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-                new("name", $"{user.FirstName} {user.LastName}"),
-                new(JwtRegisteredClaimNames.Email, user.Email),
-                new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-            };
+            var credentials = GenerateCredentials();
+            var claims = BuildClaims(user);
 
             var token = new JwtSecurityToken(
                 issuer: Environment.GetEnvironmentVariable("ISSUER"),
@@ -45,6 +36,23 @@ namespace Spentir.Infrastructure.Security
                 signingCredentials: credentials);
 
             return new JwtSecurityTokenHandler().WriteToken(token); ;
+        }
+
+        private static SigningCredentials GenerateCredentials()
+        {
+            var secretKey = Environment.GetEnvironmentVariable("SECRET_KEY") ?? throw new InvalidOperationException("SECRET_KEY environment variable is not set.");
+            var securityKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(secretKey));
+
+            return new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+        }
+
+        private static List<Claim> BuildClaims(User user)
+        {
+            return
+            [
+                new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+                new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            ];
         }
     }
 }

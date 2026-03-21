@@ -11,7 +11,8 @@ namespace Spentir.Domain.Models.Entities
         public string LastName { get; private set; } = string.Empty;
         public string Currency { get; private set; } = "EUR";
         public ICollection<Expense> Expenses { get; set; } = [];
-
+        public ICollection<Subscription> Subscriptions { get; set; } = [];
+        
         public User(string email, string password, string firstName, string lastName, string currency)
         {
             if (string.IsNullOrEmpty(email)) throw new DomainException("User must have an Email");
