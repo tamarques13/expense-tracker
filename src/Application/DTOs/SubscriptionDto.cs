@@ -11,6 +11,7 @@ namespace Spentir.Application.DTOs
         public DateOnly RenewDay { get; set; }
         public DateOnly? ExpireDay { get; set; }
         public bool IsActive { get; set; }
+        public DateOnly? LastGenerated { get; set; }
         public Guid UserId { get; set; }
     }
 

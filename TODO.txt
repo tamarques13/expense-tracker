@@ -1,11 +1,6 @@
 - Write down buissness rules and features of the app
     - Subscriptions are auto inserted into calculations
-    - Adds for maximun of 3 scans/month per free tier user
-
-# Roles: 
-
-Free tier and paid tier
-    - Respective permissions
+    - 
 
 # Subscriptions
 
@@ -30,3 +25,19 @@ In that job, verify:
     Handle months with fewer days by clamping renewal day to the last valid day.
 
     Keep the logic idempotent so re-runs don’t create duplicates.
+
+# Refresh tokens 
+
+# Forget Password Flow
+
+# Change User Email / configs
+
+# User Roles Free tier and Paid
+
+# Look Into OCR and LLM of OpenAI to make the camera part to insert data with photos
+
+# Adds for maximum  
+    - 3 scans/month per free tier user, paid is limitless
+    - 1/3/5 Subscription per account for free tier, paid is limitless
+
+# Add Reports in .pdf and .csv throguh email (API) on demand and with hangfire job

@@ -5,7 +5,7 @@ using Spentir.Domain.Models.Entities;
 using Spentir.Domain.Models.ValueObjects;
 using Spentir.Application.DTOs.Analytics;
 using Spentir.Domain.Exceptions;
-using Spentir.Application.Mappers;
+using Spentir.Application.Mappers.Analytics;
 
 namespace Spentir.Application.Services
 {

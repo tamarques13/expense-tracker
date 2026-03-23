@@ -13,6 +13,7 @@ namespace Spentir.Domain.Models.Entities
         public DateOnly? ExpireDay { get; private set; }
         public bool IsActive { get; private set; }
         public Guid UserId { get; private set; }
+        public DateOnly? LastGenerated { get; private set; }
         public User? User { get; private set; }
 
         public Subscription(string name, ExpenseCategory category, decimal amount, DateOnly renewDay, DateOnly? expireDay, Guid userId)
@@ -30,6 +31,7 @@ namespace Spentir.Domain.Models.Entities
             RenewDay = renewDay;
             ExpireDay = expireDay;
             IsActive = true;
+            LastGenerated = null;
             UserId = userId;
         }
 
@@ -51,6 +53,11 @@ namespace Spentir.Domain.Models.Entities
         public void ToggleSubscriptionState()
         {
             IsActive = !IsActive;
+        }
+
+        public void SetGeneratedExpenseDate()
+        {
+            LastGenerated = DateOnly.FromDateTime(DateTime.Now);
         }
     }
 }

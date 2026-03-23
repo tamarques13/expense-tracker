@@ -1,6 +1,6 @@
 using Spentir.Application.DTOs.Analytics;
 
-namespace Spentir.Application.Mappers
+namespace Spentir.Application.Mappers.Analytics
 {
     public class MonthlyAnalyticsDtoBuilder
     {

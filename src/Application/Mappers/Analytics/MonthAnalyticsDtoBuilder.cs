@@ -1,7 +1,7 @@
 using Spentir.Application.DTOs.Analytics;
 using Spentir.Domain.Models.ValueObjects;
 
-namespace Spentir.Application.Mappers
+namespace Spentir.Application.Mappers.Analytics
 {
     public class MonthAnalyticsDtoBuilder
     {

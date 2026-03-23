@@ -2,7 +2,7 @@ using Spentir.Domain.Models.ValueObjects;
 using Spentir.Domain.Models.Entities;
 using Spentir.Application.DTOs.Analytics;
 
-namespace Spentir.Application.Mappers
+namespace Spentir.Application.Mappers.Analytics
 {
     public class CategoryYearAnalyticsDtoBuilder
     {

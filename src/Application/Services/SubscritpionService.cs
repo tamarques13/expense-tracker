@@ -1,6 +1,7 @@
 using Spentir.Infrastructure.Persistence.Repositories.Interfaces;
 using Spentir.Application.Services.Interfaces;
 using Spentir.Domain.Models.Entities;
+using Spentir.Application.Mappers;
 using Spentir.Application.DTOs;
 
 namespace Spentir.Application.Services
@@ -14,17 +15,7 @@ namespace Spentir.Application.Services
 
             await _subscriptionRepository.AddAsync(subscription);
 
-            return new SubscriptionDto
-            {
-                Id = subscription.Id,
-                Name = subscription.Name,
-                Category = subscription.Category.ToString(),
-                Amount = subscription.Amount,
-                RenewDay = subscription.RenewDay,
-                ExpireDay = subscription.ExpireDay,
-                IsActive = subscription.IsActive,
-                UserId = subscription.UserId
-            };
+            return subscription.ToSubscriptionDto();
         }
 
         public async Task<List<SubscriptionDto>> GetSubscriptionAsync(Guid userId)
@@ -33,20 +24,7 @@ namespace Spentir.Application.Services
 
             var subscritpionsDto = new List<SubscriptionDto>();
 
-            foreach (var s in subscriptions)
-            {
-                subscritpionsDto.Add(new SubscriptionDto
-                {
-                    Id = s.Id,
-                    Name = s.Name,
-                    Category = s.Category.ToString(),
-                    Amount = s.Amount,
-                    RenewDay = s.RenewDay,
-                    ExpireDay = s.ExpireDay,
-                    IsActive = s.IsActive,
-                    UserId = s.UserId
-                });
-            }
+            foreach (var s in subscriptions) subscritpionsDto.Add(s.ToSubscriptionDto());
 
             return subscritpionsDto;
         }
@@ -55,17 +33,7 @@ namespace Spentir.Application.Services
         {
             var subscription = await _subscriptionRepository.GetByIdAsync(Id, userId);
 
-            return new SubscriptionDto
-            {
-                Id = subscription.Id,
-                Name = subscription.Name,
-                Category = subscription.Category.ToString(),
-                Amount = subscription.Amount,
-                RenewDay = subscription.RenewDay,
-                ExpireDay = subscription.ExpireDay,
-                IsActive = subscription.IsActive,
-                UserId = subscription.UserId
-            };
+            return subscription.ToSubscriptionDto();
         }
 
         public async Task UpdateSubscriptionAsync(Guid Id, CreateSubscriptionDto dto, Guid userId)
