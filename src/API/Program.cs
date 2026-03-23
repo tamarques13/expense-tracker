@@ -40,6 +40,9 @@ builder.Services.AddScoped<ICategoryTrendCalculator, CategoryTrendCalculator>();
 builder.Services.AddScoped<IMonthAnalyticsCalculator, MonthAnalyticsCalculator>();
 builder.Services.AddScoped<IYearAnalyticsCalculator, YearAnalyticsCalculator>();
 
+builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
+builder.Services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {

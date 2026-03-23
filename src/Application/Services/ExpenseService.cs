@@ -2,6 +2,7 @@ using Spentir.Domain.Services.Interfaces;
 using Spentir.Infrastructure.Persistence.Repositories.Interfaces;
 using Spentir.Application.Services.Interfaces;
 using Spentir.Domain.Models.Entities;
+using Spentir.Application.Mappers;
 using Spentir.Application.DTOs;
 
 namespace Spentir.Application.Services
@@ -24,12 +25,7 @@ namespace Spentir.Application.Services
 
             await _expenseRepository.AddAsync(expense);
 
-            return new ExpenseDto
-            {
-                Id = expense.Id,
-                Category = expense.Category.ToString(),
-                Amount = expense.Amount
-            };
+            return expense.ToExpenseDto();
         }
 
         /// <summary>
@@ -48,15 +44,7 @@ namespace Spentir.Application.Services
 
             var expensesDto = new List<ExpenseDto>();
 
-            foreach (var e in expenses)
-            {
-                expensesDto.Add(new ExpenseDto
-                {
-                    Id = e.Id,
-                    Category = e.Category.ToString(),
-                    Amount = e.Amount
-                });
-            }
+            foreach (var e in expenses) expensesDto.Add(e.ToExpenseDto());
 
             return expensesDto;
         }
