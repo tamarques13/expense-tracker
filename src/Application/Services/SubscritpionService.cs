@@ -20,7 +20,18 @@ namespace Spentir.Application.Services
 
         public async Task<List<SubscriptionDto>> GetSubscriptionAsync(Guid userId)
         {
-            var subscriptions = await _subscriptionRepository.GetAsync(userId);
+            var subscriptions = await _subscriptionRepository.GetAllAsync(userId);
+
+            var subscritpionsDto = new List<SubscriptionDto>();
+
+            foreach (var s in subscriptions) subscritpionsDto.Add(s.ToSubscriptionDto());
+
+            return subscritpionsDto;
+        }
+
+        public async Task<List<SubscriptionDto>> GetJobSubscriptionAsync(bool isActive)
+        {
+            var subscriptions = await _subscriptionRepository.GetAllForBackgroundJobAsync(isActive);
 
             var subscritpionsDto = new List<SubscriptionDto>();
 

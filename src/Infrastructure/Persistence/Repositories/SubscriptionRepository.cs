@@ -21,22 +21,29 @@ namespace Spentir.Infrastructure.Persistence.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<List<Subscription>> GetAsync(Guid userId)
+        public async Task<List<Subscription>> GetAllAsync(Guid userId)
         {
             IQueryable<Subscription> query = _context.Subscriptions.Where(s => s.UserId == userId);
 
             return await query.OrderByDescending(s => s.IsActive).ToListAsync();
         }
 
-        public async Task<Subscription> GetByIdAsync(Guid Id, Guid userId)
+        public async Task<Subscription> GetByIdAsync(Guid id, Guid userId)
         {
-            return await _context.Subscriptions.FirstOrDefaultAsync(s => s.Id == Id && s.UserId == userId) ?? throw new KeyNotFoundException($"Subscription with Id: {Id} not found."); ;
+            return await _context.Subscriptions.FirstOrDefaultAsync(s => s.Id == id && s.UserId == userId) ?? throw new KeyNotFoundException($"Subscription with Id: {id} not found.");
         }
 
         public async Task DeleteAsync(Subscription subscription)
         {
             _context.Subscriptions.Remove(subscription);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<List<Subscription>> GetAllForBackgroundJobAsync(bool isActive)
+        {
+            IQueryable<Subscription> query = _context.Subscriptions.Where(s => s.IsActive == isActive);
+
+            return await query.OrderByDescending(s => s.IsActive).ToListAsync();
         }
     }
 }

@@ -46,5 +46,10 @@ namespace Spentir.Infrastructure.Persistence.Repositories
 
             await _context.SaveChangesAsync();
         }
+
+        public async Task<bool> ExistsForSubscriptionOnDateAsync(Guid id, DateOnly date)
+        {
+            return await _context.Expenses.AnyAsync(s => s.Id == id && s.CreatedAt == date);
+        }
     }
 };

@@ -8,6 +8,6 @@ namespace Spentir.Application.Services.Interfaces
         Task UpdateExpenseAsync(Guid expenseId, CreateExpenseDto dto, Guid UserId);
         Task<List<ExpenseDto>> GetExpensesAsync(Guid UserId, DateOnly? date, bool isLastYear);
         Task DeleteExpenseAsync(Guid expenseId, Guid UserId);
-
+        Task<bool> ExpenseAlreadyCreatedAsync(Guid expenseId, DateOnly date);
     }
 }

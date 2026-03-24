@@ -88,5 +88,11 @@ namespace Spentir.Application.Services
 
             await _expenseRepository.DeleteAsync(expense);
         }
+
+        public async Task<bool> ExpenseAlreadyCreatedAsync(Guid expenseId, DateOnly date)
+        {
+            return await _expenseRepository.ExistsForSubscriptionOnDateAsync(expenseId, date);
+
+        }
     }
 }

@@ -1,16 +1,20 @@
 using DotNetEnv;
+using Hangfire;
+using Hangfire.PostgreSql;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Spentir.Infrastructure.Persistence.Configurations;
 using Spentir.Application.Services.Interfaces;
-using Spentir.Infrastructure.Persistence.Repositories.Interfaces;
+using Spentir.Application.Jobs.Interfaces;
 using Spentir.Application.Services;
+using Spentir.Application.Jobs;
+using Spentir.Infrastructure.Persistence.Configurations;
+using Spentir.Infrastructure.Persistence.Repositories.Interfaces;
 using Spentir.Infrastructure.Persistence.Repositories;
-using Spentir.API.Middleware;
 using Spentir.Domain.Services.Interfaces;
 using Spentir.Domain.Services;
+using Spentir.API.Middleware;
 
 Env.Load();
 
@@ -33,6 +37,8 @@ builder.Services.AddScoped<IExpenseService, ExpenseService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAnalyticService, AnalyticService>();
+builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
+builder.Services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
 
 builder.Services.AddScoped<IDateRangeService, DateRangeService>();
 builder.Services.AddScoped<ICategoryAggregateService, CategoryAggregateService>();
@@ -40,8 +46,7 @@ builder.Services.AddScoped<ICategoryTrendCalculator, CategoryTrendCalculator>();
 builder.Services.AddScoped<IMonthAnalyticsCalculator, MonthAnalyticsCalculator>();
 builder.Services.AddScoped<IYearAnalyticsCalculator, YearAnalyticsCalculator>();
 
-builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
-builder.Services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
+builder.Services.AddScoped<ISubscriptionJob, SubscriptionJob>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
@@ -86,7 +91,25 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
     };
 });
 
+builder.Services.AddHangfire(config =>
+    config.UsePostgreSqlStorage(options =>
+    {
+        options.UseNpgsqlConnection(connectionString);
+    })
+);
+builder.Services.AddHangfireServer();
+
 var app = builder.Build();
+
+app.UseHangfireDashboard("/dashboard");
+
+using (var scope = app.Services.CreateScope())
+{
+    var recurringJobs = scope.ServiceProvider.GetRequiredService<IRecurringJobManager>();
+    var subscriptionJob  = scope.ServiceProvider.GetRequiredService<ISubscriptionJob>();
+
+    recurringJobs.AddOrUpdate("Create-Subscription-Expense", () => subscriptionJob .CreateSubscriptionsExpense(), Cron.Daily());
+}
 
 if (app.Environment.IsDevelopment())
 {

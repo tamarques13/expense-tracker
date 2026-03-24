@@ -8,6 +8,7 @@ namespace Spentir.Infrastructure.Persistence.Repositories.Interfaces
         Task UpdateAsync(Expense expense);
         Task<List<Expense>> GetAsync(Guid userId, DateOnly? start, DateOnly? end);
         Task<Expense> GetByIdAsync(Guid expenseId, Guid userId);
+        Task<bool> ExistsForSubscriptionOnDateAsync(Guid id, DateOnly date);
         Task DeleteAsync(Expense expense);
     }
 }
