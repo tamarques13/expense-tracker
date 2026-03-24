@@ -30,11 +30,11 @@ namespace Spentir.API.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet]
-        public async Task<IActionResult> GetExpenses(DateOnly? date, bool isLastYear)
+        public async Task<IActionResult> GetExpenses(DateOnly? date, bool isLastYear, int page = 1, int pageSize = 20)
         {
-            var expensesDto = await _expenseService.GetExpensesAsync(Guid.Parse(UserId), date, isLastYear);
+            var expensesDto = await _expenseService.GetExpensesAsync(Guid.Parse(UserId), date, isLastYear, page, pageSize);
 
-            return Ok(expensesDto);            
+            return Ok(expensesDto);
         }
 
         [ProducesResponseType(StatusCodes.Status204NoContent)]

@@ -13,4 +13,13 @@ namespace Spentir.Application.DTOs
         public string Category { get; set; } = string.Empty;
         public decimal Amount { get; set; }
     }
+
+    public class ExpenseListDto
+    {
+        public List<ExpenseDto> Items { get; set; } = [];
+        public int PageNumber { get; set; }
+        public int PageSize { get; set; }
+        public int TotalCount { get; set; }
+        public int TotalPages { get; set; }
+    }
 }

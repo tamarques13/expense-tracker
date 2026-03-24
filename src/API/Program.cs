@@ -6,12 +6,14 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Spentir.Application.Services.Interfaces;
-using Spentir.Application.Jobs.Interfaces;
+using Spentir.Application.Jobs.Subscription.Interfaces;
 using Spentir.Application.Services;
-using Spentir.Application.Jobs;
+using Spentir.Application.Jobs.Subscription;
 using Spentir.Infrastructure.Persistence.Configurations;
 using Spentir.Infrastructure.Persistence.Repositories.Interfaces;
+using Spentir.Infrastructure.Persistence.Transactions.Interfaces;
 using Spentir.Infrastructure.Persistence.Repositories;
+using Spentir.Infrastructure.Persistence.Transactions;
 using Spentir.Domain.Services.Interfaces;
 using Spentir.Domain.Services;
 using Spentir.API.Middleware;
@@ -46,6 +48,11 @@ builder.Services.AddScoped<ICategoryTrendCalculator, CategoryTrendCalculator>();
 builder.Services.AddScoped<IMonthAnalyticsCalculator, MonthAnalyticsCalculator>();
 builder.Services.AddScoped<IYearAnalyticsCalculator, YearAnalyticsCalculator>();
 
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+builder.Services.AddScoped<ISubscriptionRules, SubscriptionRules>();
+builder.Services.AddScoped<ISubscriptionActions, SubscriptionActions>();
+builder.Services.AddScoped<ISubscriptionProcessor, SubscriptionProcessor>();
 builder.Services.AddScoped<ISubscriptionJob, SubscriptionJob>();
 
 builder.Services.AddEndpointsApiExplorer();
@@ -106,12 +113,12 @@ app.UseHangfireDashboard("/dashboard");
 using (var scope = app.Services.CreateScope())
 {
     var recurringJobs = scope.ServiceProvider.GetRequiredService<IRecurringJobManager>();
-    var subscriptionJob  = scope.ServiceProvider.GetRequiredService<ISubscriptionJob>();
+    var subscriptionJob = scope.ServiceProvider.GetRequiredService<ISubscriptionJob>();
 
-    recurringJobs.AddOrUpdate("Create-Subscription-Expense", () => subscriptionJob .CreateSubscriptionsExpense(), Cron.Daily());
+    recurringJobs.AddOrUpdate("Create-Subscription-Expense", () => subscriptionJob.CreateSubscriptionsExpenseAsync(), Cron.Daily());
 }
 
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment()) 
 {
     app.UseSwagger();
     app.UseSwaggerUI();

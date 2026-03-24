@@ -15,10 +15,10 @@ namespace Spentir.Infrastructure.Persistence.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateAsync(Subscription subscription)
+        public async Task UpdateAsync(Subscription subscription, CancellationToken cancellationToken = default)
         {
             _context.Subscriptions.Update(subscription);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
         public async Task<List<Subscription>> GetAllAsync(Guid userId)
@@ -39,11 +39,26 @@ namespace Spentir.Infrastructure.Persistence.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<List<Subscription>> GetAllForBackgroundJobAsync(bool isActive)
+        public async Task<List<Subscription>> GetAllForBackgroundJobAsync(bool isActive, int page, int pageSize, CancellationToken cancellationToken = default)
         {
             IQueryable<Subscription> query = _context.Subscriptions.Where(s => s.IsActive == isActive);
 
-            return await query.OrderByDescending(s => s.IsActive).ToListAsync();
+            return await query.OrderBy(s => s.Id).Skip((page - 1) * pageSize).Take(pageSize).ToListAsync(cancellationToken);
+        }
+
+        public async Task<bool> CheckForSubscriptionRenewDateAsync(Guid id, DateOnly date, CancellationToken cancellationToken = default)
+        {
+            return await _context.Subscriptions.AnyAsync(s => s.Id == id && s.RenewDay.Day == date.Day, cancellationToken);
+        }
+
+        public async Task<bool> CheckForSubscriptionExpireDateAsync(Guid id, DateOnly date, CancellationToken cancellationToken = default)
+        {
+            return await _context.Subscriptions.AnyAsync(s => s.Id == id && s.ExpireDay != null && s.ExpireDay <= date, cancellationToken);
+        }
+
+        public async Task<bool> ExistsForSubscriptionOnDateAsync(Guid id, DateOnly date, Guid userId, CancellationToken cancellationToken = default)
+        {
+            return await _context.Subscriptions.AnyAsync(s => s.Id == id && s.LastGenerated == date && s.UserId == userId, cancellationToken);
         }
     }
 }

@@ -27,7 +27,7 @@ namespace Spentir.Infrastructure.Persistence.Configurations
            .HasIndex(r => new { r.UserId, r.CreatedAt });
 
             modelBuilder.Entity<Subscription>()
-            .HasIndex(r => new { r.UserId });
+            .HasIndex(r => new { r.UserId, r.IsActive, r.ExpireDay, r.LastGenerated });
         }
     }
 }

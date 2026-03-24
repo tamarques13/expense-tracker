@@ -15,5 +15,18 @@ namespace Spentir.Application.Mappers
                 CreatedAt = entity.CreatedAt
             };
         }
+
+        public static ExpenseListDto ToListExpenseDto(List<ExpenseDto> items, int count, int pageNumber, int pageSize)
+        {
+            return new ExpenseListDto
+            {
+                Items = items,
+                TotalCount = count,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalPages = (int)Math.Ceiling(count / (double)pageSize)
+            };
+        }
     }
+
 }
