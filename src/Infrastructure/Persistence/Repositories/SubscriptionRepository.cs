@@ -15,28 +15,50 @@ namespace Spentir.Infrastructure.Persistence.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateAsync(Subscription subscription)
+        public async Task UpdateAsync(Subscription subscription, CancellationToken cancellationToken = default)
         {
             _context.Subscriptions.Update(subscription);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task<List<Subscription>> GetAsync(Guid userId)
+        public async Task<List<Subscription>> GetAllAsync(Guid userId)
         {
             IQueryable<Subscription> query = _context.Subscriptions.Where(s => s.UserId == userId);
 
             return await query.OrderByDescending(s => s.IsActive).ToListAsync();
         }
 
-        public async Task<Subscription> GetByIdAsync(Guid Id, Guid userId)
+        public async Task<Subscription> GetByIdAsync(Guid id, Guid userId)
         {
-            return await _context.Subscriptions.FirstOrDefaultAsync(s => s.Id == Id && s.UserId == userId) ?? throw new KeyNotFoundException($"Subscription with Id: {Id} not found."); ;
+            return await _context.Subscriptions.FirstOrDefaultAsync(s => s.Id == id && s.UserId == userId) ?? throw new KeyNotFoundException($"Subscription with Id: {id} not found.");
         }
 
         public async Task DeleteAsync(Subscription subscription)
         {
             _context.Subscriptions.Remove(subscription);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<List<Subscription>> GetAllForBackgroundJobAsync(bool isActive, int page, int pageSize, CancellationToken cancellationToken = default)
+        {
+            IQueryable<Subscription> query = _context.Subscriptions.Where(s => s.IsActive == isActive);
+
+            return await query.OrderBy(s => s.Id).Skip((page - 1) * pageSize).Take(pageSize).ToListAsync(cancellationToken);
+        }
+
+        public async Task<bool> CheckForSubscriptionRenewDateAsync(Guid id, DateOnly date, CancellationToken cancellationToken = default)
+        {
+            return await _context.Subscriptions.AnyAsync(s => s.Id == id && s.RenewDay.Day == date.Day, cancellationToken);
+        }
+
+        public async Task<bool> CheckForSubscriptionExpireDateAsync(Guid id, DateOnly date, CancellationToken cancellationToken = default)
+        {
+            return await _context.Subscriptions.AnyAsync(s => s.Id == id && s.ExpireDay != null && s.ExpireDay <= date, cancellationToken);
+        }
+
+        public async Task<bool> ExistsForSubscriptionOnDateAsync(Guid id, DateOnly date, Guid userId, CancellationToken cancellationToken = default)
+        {
+            return await _context.Subscriptions.AnyAsync(s => s.Id == id && s.LastGenerated == date && s.UserId == userId, cancellationToken);
         }
     }
 }

@@ -11,6 +11,7 @@ namespace Spentir.Application.Services
     {
         private readonly IExpenseRepository _expenseRepository = expenseRepository;
         private readonly IDateRangeService dateRangeService = dateRangeService;
+        
         /// <summary>
         /// Creates a new expense entry for the specified user. The method validates the
         /// provided category, constructs the domain entity and persists it in the repository.
@@ -19,11 +20,11 @@ namespace Spentir.Application.Services
         /// <param name="userId">The identifier of the user who owns the expense.</param>
         /// <exception cref="DomainException"> Thrown when the provided category is invalid or violates domain rules.</exception>
 
-        public async Task<ExpenseDto> CreateExpenseAsync(CreateExpenseDto dto, Guid userId)
+        public async Task<ExpenseDto> CreateExpenseAsync(CreateExpenseDto dto, Guid userId, CancellationToken cancellationToken = default)
         {
             var expense = new Expense(Enum.Parse<ExpenseCategory>(dto.Category), dto.Amount, userId);
 
-            await _expenseRepository.AddAsync(expense);
+            await _expenseRepository.AddAsync(expense, cancellationToken);
 
             return expense.ToExpenseDto();
         }
@@ -34,19 +35,19 @@ namespace Spentir.Application.Services
         /// </summary>
         /// <param name="userId">The identifier of the user whose expenses should be retrieved.</param>
 
-        public async Task<List<ExpenseDto>> GetExpensesAsync(Guid userId, DateOnly? date, bool isLastYear)
+        public async Task<ExpenseListDto> GetExpensesAsync(Guid userId, DateOnly? date, bool isLastYear, int page, int pageSize)
         {
             var targetDate = dateRangeService.Normalize(date ?? DateOnly.FromDateTime(DateTime.UtcNow));
 
             (DateOnly start, DateOnly end) = isLastYear ? dateRangeService.GetMonthRange(targetDate, 12) : dateRangeService.GetMonthRange(targetDate, 1);
 
-            var expenses = await _expenseRepository.GetAsync(userId, start, end);
+            var (expenses, totalCount) = await _expenseRepository.GetAsync(userId, start, end, page, pageSize);
 
             var expensesDto = new List<ExpenseDto>();
 
             foreach (var e in expenses) expensesDto.Add(e.ToExpenseDto());
 
-            return expensesDto;
+            return ExpenseToDto.ToListExpenseDto(expensesDto, totalCount, page, pageSize);
         }
 
         /// <summary>

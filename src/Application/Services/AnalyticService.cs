@@ -126,16 +126,16 @@ namespace Spentir.Application.Services
 
             var total = monthExpenses.Sum(e => e.Amount);
             var categoryTotal = monthExpenses.Where(e => e.Category == category).Sum(e => e.Amount);
-            
+
             var expensesGroups = _aggregateService.GroupExpensesByMonth(categoryExpenses);
 
             var monthlyAnalytics = BuildMonthlyAnalytics(monthRange, range, total, expensesGroups);
 
             var metrics = _categoryTrendCalculator.Calculate(
-                monthExpenses, 
-                category, 
-                monthlyAnalytics, 
-                categoryTotal, 
+                monthExpenses,
+                category,
+                monthlyAnalytics,
+                categoryTotal,
                 total);
 
             return CategoryTrendDtoBuilder.Build(metrics, category);
@@ -157,7 +157,9 @@ namespace Spentir.Application.Services
 
         private async Task<List<Expense>> LoadExpensesAsync(Guid userId, DateRange range)
         {
-            return (await _expenseRepository.GetAsync(userId, range.Start, range.End)).ToList();
+            var (items, _) = await _expenseRepository.GetAsync(userId, range.Start, range.End, 1, int.MaxValue);
+
+            return items;
         }
 
         private static List<CategoryAnalyticsDto> BuildCategoryAnalytics(IDictionary<ExpenseCategory, CategoryAggregate> current, IDictionary<ExpenseCategory, decimal> previous, decimal totalSpent)

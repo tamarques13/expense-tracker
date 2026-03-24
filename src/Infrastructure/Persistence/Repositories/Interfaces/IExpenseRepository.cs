@@ -4,9 +4,9 @@ namespace Spentir.Infrastructure.Persistence.Repositories.Interfaces
 {
     public interface IExpenseRepository
     {
-        Task AddAsync(Expense expense);
+        Task AddAsync(Expense expense, CancellationToken cancellationToken = default);
         Task UpdateAsync(Expense expense);
-        Task<List<Expense>> GetAsync(Guid userId, DateOnly? start, DateOnly? end);
+        Task<(List<Expense>, int TotalCount)> GetAsync(Guid userId, DateOnly? start, DateOnly? end, int page, int pageSize);
         Task<Expense> GetByIdAsync(Guid expenseId, Guid userId);
         Task DeleteAsync(Expense expense);
     }

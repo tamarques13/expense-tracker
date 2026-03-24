@@ -9,11 +9,11 @@ namespace Spentir.Infrastructure.Persistence.Repositories
     {
         private readonly SpentirDbContext _context = context;
 
-        public async Task AddAsync(Expense expense)
+        public async Task AddAsync(Expense expense, CancellationToken cancellationToken = default)
         {
             _context.Expenses.Add(expense);
 
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
         public async Task UpdateAsync(Expense expense)
@@ -23,7 +23,7 @@ namespace Spentir.Infrastructure.Persistence.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<List<Expense>> GetAsync(Guid userId, DateOnly? start, DateOnly? end)
+        public async Task<(List<Expense>, int TotalCount)> GetAsync(Guid userId, DateOnly? start, DateOnly? end, int page, int pageSize)
         {
             IQueryable<Expense> query = _context.Expenses.Where(r => r.UserId == userId);
 
@@ -32,7 +32,10 @@ namespace Spentir.Infrastructure.Persistence.Repositories
                 query = query.Where(r => r.CreatedAt >= start && r.CreatedAt < end);
             }
 
-            return await query.OrderByDescending(e => e.CreatedAt).ToListAsync();
+            var totalCount = await query.CountAsync();
+            var items = await query.OrderByDescending(e => e.CreatedAt).Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+
+            return (items, totalCount);
         }
 
         public async Task<Expense> GetByIdAsync(Guid expenseId, Guid userId)

@@ -55,9 +55,9 @@ namespace Spentir.Domain.Models.Entities
             IsActive = !IsActive;
         }
 
-        public void SetGeneratedExpenseDate()
+        public void SetGeneratedExpenseDate(DateOnly date)
         {
-            LastGenerated = DateOnly.FromDateTime(DateTime.Now);
+            LastGenerated = date;
         }
     }
 }
