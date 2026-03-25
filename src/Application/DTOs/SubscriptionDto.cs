@@ -1,5 +1,3 @@
-using Spentir.Domain.Models.Entities;
-
 namespace Spentir.Application.DTOs
 {
     public class SubscriptionDto
@@ -23,4 +21,14 @@ namespace Spentir.Application.DTOs
         public DateOnly RenewDay { get; set; }
         public DateOnly? ExpireDay { get; set; }
     }
+
+    public class SubscriptionListDto
+    {
+        public List<SubscriptionDto> Items { get; set; } = [];
+        public int PageNumber { get; set; }
+        public int PageSize { get; set; }
+        public int TotalCount { get; set; }
+        public int TotalPages { get; set; }
+    }
+    
 }

@@ -6,7 +6,7 @@ namespace Spentir.Application.Services.Interfaces
     public interface ISubscriptionService
     {
         Task<SubscriptionDto> CreateSubscriptionAsync(CreateSubscriptionDto dto, Guid userId);
-        Task<List<SubscriptionDto>> GetSubscriptionAsync(Guid userId);
+        Task<SubscriptionListDto> GetSubscriptionAsync(Guid userId, int page, int pageSize);
         Task<List<SubscriptionDto>> GetJobSubscriptionAsync(int page, int pageSize, bool isActive, CancellationToken cancellationToken = default);
         Task<SubscriptionDto> GetSubscriptionByIdAsync(Guid Id, Guid userId);
         Task UpdateSubscriptionAsync(Guid subscriptionId, CreateSubscriptionDto dto, Guid userId);

@@ -20,5 +20,17 @@ namespace Spentir.Application.Mappers
                 UserId = entity.UserId
             };
         }
+
+        public static SubscriptionListDto ToListSubscriptionDto(List<SubscriptionDto> items, int count, int pageNumber, int pageSize)
+        {
+            return new SubscriptionListDto
+            {
+                Items = items,
+                TotalCount = count,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalPages = (int)Math.Ceiling(count / (double)pageSize)
+            };
+        }
     }
 }

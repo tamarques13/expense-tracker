@@ -27,11 +27,15 @@ namespace Spentir.Infrastructure.Persistence.Repositories
             await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task<List<Subscription>> GetAllAsync(Guid userId)
+        public async Task<(List<Subscription>, int TotalCount)> GetAllAsync(Guid userId, int page, int pageSize)
         {
             IQueryable<Subscription> query = _context.Subscriptions.Where(s => s.UserId == userId);
 
-            return await query.OrderByDescending(s => s.IsActive).ToListAsync();
+            var totalCount = await query.CountAsync();
+
+            var items = await query.OrderByDescending(s => s.IsActive).Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+
+            return (items, totalCount);
         }
 
         public async Task<Subscription> GetByIdAsync(Guid id, Guid userId)
