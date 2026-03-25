@@ -5,6 +5,13 @@ using Spentir.Domain.Models.ValueObjects;
 
 namespace Spentir.Domain.Services
 {
+    /// <summary>
+    /// Domain service responsible for calculating spending trends for a specific
+    /// expense category over a multi month period. Computes metrics such as
+    /// highest and lowest amounts, percentage change, multipliers and overall
+    /// trend direction based on aggregated monthly analytics.
+    /// </summary>
+
     public class CategoryTrendCalculator : ICategoryTrendCalculator
     {
         public CategoryTrendMetrics Calculate(List<Expense> expenses, ExpenseCategory category, List<YearMonthsAnalyticsDto> monthlyTotals, decimal totalCategorySpent, decimal totalSpent)

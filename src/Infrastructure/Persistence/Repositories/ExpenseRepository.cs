@@ -5,6 +5,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Spentir.Infrastructure.Persistence.Repositories
 {
+    /// <summary>
+    /// Repository responsible for managing <see cref="Expense"/> persistence.
+    /// Provides CRUD operations and paginated queries scoped to a specific user.
+    /// </summary>
+
     public class ExpenseRepository(SpentirDbContext context) : IExpenseRepository
     {
         private readonly SpentirDbContext _context = context;
@@ -33,6 +38,7 @@ namespace Spentir.Infrastructure.Persistence.Repositories
             }
 
             var totalCount = await query.CountAsync();
+
             var items = await query.OrderByDescending(e => e.CreatedAt).Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
 
             return (items, totalCount);

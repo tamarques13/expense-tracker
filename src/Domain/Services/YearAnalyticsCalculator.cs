@@ -5,6 +5,13 @@ using Spentir.Domain.Models.ValueObjects;
 
 namespace Spentir.Domain.Services
 {
+    /// <summary>
+    /// Domain service responsible for computing yearly analytics metrics based on
+    /// category aggregates, total spending and month‑by‑month summaries. Produces
+    /// values such as highest and lowest spending categories, average monthly
+    /// spending and the full yearly analytics breakdown.
+    /// </summary>
+
     public class YearAnalyticsCalculator : IYearAnalyticsCalculator
     {
         public YearAnalyticsMetrics Calculate(Dictionary<ExpenseCategory, CategoryAggregate> grouped, decimal totalSpent, List<CategoryYearAnalyticsDto> categories, List<YearMonthsAnalyticsDto> monthly)

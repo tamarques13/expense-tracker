@@ -5,6 +5,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Spentir.Infrastructure.Persistence.Repositories
 {
+    /// <summary>
+    /// Repository responsible for managing <see cref="Subscription"/> persistence.
+    /// Provides CRUD operations to a specific user.
+    /// </summary>
+
     public class SubscriptionRepository(SpentirDbContext context) : ISubscriptionRepository
     {
         private readonly SpentirDbContext _context = context;
@@ -12,6 +17,7 @@ namespace Spentir.Infrastructure.Persistence.Repositories
         public async Task AddAsync(Subscription subscription)
         {
             _context.Subscriptions.Add(subscription);
+
             await _context.SaveChangesAsync();
         }
 
@@ -36,6 +42,7 @@ namespace Spentir.Infrastructure.Persistence.Repositories
         public async Task DeleteAsync(Subscription subscription)
         {
             _context.Subscriptions.Remove(subscription);
+
             await _context.SaveChangesAsync();
         }
 
