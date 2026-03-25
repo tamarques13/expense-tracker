@@ -2,6 +2,12 @@ using Spentir.Domain.Services.Interfaces;
 
 namespace Spentir.Domain.Services
 {
+    /// <summary>
+    /// Domain service that provides date normalization and range calculations used
+    /// throughout the analytics and expense domains. Supplies month ranges,
+    /// previous‑month resolution and rolling month sequences for multi‑period analysis.
+    /// </summary>
+
     public class DateRangeService : IDateRangeService
     {
         public (DateOnly Start, DateOnly End) GetMonthRange(DateOnly date, int range)

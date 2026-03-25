@@ -5,6 +5,13 @@ using Spentir.Domain.Models.ValueObjects;
 
 namespace Spentir.Domain.Services
 {
+    /// <summary>
+    /// Domain service responsible for computing monthly analytics metrics based on
+    /// expense data, category aggregates and previous month comparisons. Produces
+    /// values such as median spending, category extremes, daily averages and
+    /// month‑over‑month change indicators.
+    /// </summary>
+
     public class MonthAnalyticsCalculator : IMonthAnalyticsCalculator
     {
         public MonthAnalyticsMetrics Calculate(DateOnly date, List<Expense> expenses, Dictionary<ExpenseCategory, CategoryAggregate> grouped, decimal totalSpent, List<CategoryAnalyticsDto> categories, IEnumerable<Expense> previous)

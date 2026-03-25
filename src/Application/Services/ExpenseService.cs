@@ -7,11 +7,18 @@ using Spentir.Application.DTOs;
 
 namespace Spentir.Application.Services
 {
+    /// <summary>
+    /// Application layer service responsible for managing user expenses.
+    /// Coordinates domain validation, repository access and DTO mapping.
+    /// This service acts as the main entry point for creating, retrieving,
+    /// updating and deleting expenses within the application.
+    /// </summary
+    
     public class ExpenseService(IExpenseRepository expenseRepository, IDateRangeService dateRangeService) : IExpenseService
     {
         private readonly IExpenseRepository _expenseRepository = expenseRepository;
         private readonly IDateRangeService dateRangeService = dateRangeService;
-        
+
         /// <summary>
         /// Creates a new expense entry for the specified user. The method validates the
         /// provided category, constructs the domain entity and persists it in the repository.

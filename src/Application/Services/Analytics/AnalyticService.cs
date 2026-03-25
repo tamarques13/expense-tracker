@@ -1,30 +1,40 @@
-using Spentir.Infrastructure.Persistence.Repositories.Interfaces;
-using Spentir.Application.Services.Interfaces;
+using Spentir.Application.Services.Analytics.Interfaces;
+using Spentir.Application.Mappers.Analytics;
+using Spentir.Application.DTOs.Analytics;
 using Spentir.Domain.Services.Interfaces;
 using Spentir.Domain.Models.Entities;
-using Spentir.Domain.Models.ValueObjects;
-using Spentir.Application.DTOs.Analytics;
 using Spentir.Domain.Exceptions;
-using Spentir.Application.Mappers.Analytics;
 
-namespace Spentir.Application.Services
+namespace Spentir.Application.Services.Analytics
 {
+    /// <summary>
+    /// Application layer service responsible for generating all analytics reports.
+    /// Orchestrates the full analytics pipeline by coordinating date range calculation,
+    /// expense loading, category aggregation, trend computation and DTO construction.
+    /// This service acts as the main entry point for monthly, yearly and category trend
+    /// analytics for a given user.
+    /// </summary>
+    
     public class AnalyticService(
-        IExpenseRepository expenseRepository,
         IDateRangeService dateRangeService,
         ICategoryAggregateService aggregateService,
         ICategoryTrendCalculator categoryTrendCalculator,
         IMonthAnalyticsCalculator monthAnalyticsCalculator,
-        IYearAnalyticsCalculator yearAnalyticsCalculator
+        IYearAnalyticsCalculator yearAnalyticsCalculator,
+        IAnalyticsBuilder analyticsBuilder,
+        IExpenseLoader expenseLoader,
+        IRangeCalculator rangeCalculator
         ) : IAnalyticService
     {
         private readonly record struct DateRange(DateOnly Start, DateOnly End);
-        private readonly IExpenseRepository _expenseRepository = expenseRepository;
         private readonly IDateRangeService _dateRangeService = dateRangeService;
         private readonly ICategoryAggregateService _aggregateService = aggregateService;
         private readonly ICategoryTrendCalculator _categoryTrendCalculator = categoryTrendCalculator;
         private readonly IMonthAnalyticsCalculator _monthAnalyticsCalculator = monthAnalyticsCalculator;
         private readonly IYearAnalyticsCalculator _yearAnalyticsCalculator = yearAnalyticsCalculator;
+        private readonly IAnalyticsBuilder _analyticsBuilder = analyticsBuilder;
+        private readonly IExpenseLoader _expenseLoader = expenseLoader;
+        private readonly IRangeCalculator _rangeCalculator = rangeCalculator;
 
         /// <summary>
         /// Generates the complete analytics report for a given month and user. This method orchestrates
@@ -40,17 +50,17 @@ namespace Spentir.Application.Services
                 throw new DomainException("Date is required.");
 
             var targetDate = _dateRangeService.Normalize(date.Value);
-            var (currentRange, previousRange) = GetMonthRanges(targetDate, 1);
+            var (currentRange, previousRange) = _rangeCalculator.GetMonthRanges(targetDate, 1);
 
-            var currentExpenses = await LoadExpensesAsync(userId, currentRange);
-            var previousExpenses = await LoadExpensesAsync(userId, previousRange);
+            var currentExpenses = await _expenseLoader.LoadAsync(userId, currentRange.Start, currentRange.End);
+            var previousExpenses = await _expenseLoader.LoadAsync(userId, previousRange.Start, previousRange.End);
 
             var totalSpent = currentExpenses.Sum(e => e.Amount);
 
             var currentCategoryGroups = _aggregateService.GroupByCategory(currentExpenses);
             var previousCategoryGroups = _aggregateService.GroupByCategorySimple(previousExpenses);
 
-            var categories = BuildCategoryAnalytics(currentCategoryGroups, previousCategoryGroups, totalSpent);
+            var categories = _analyticsBuilder.BuildCategoryAnalytics(currentCategoryGroups, previousCategoryGroups, totalSpent);
 
             var metrics = _monthAnalyticsCalculator.Calculate(
                 targetDate,
@@ -78,9 +88,9 @@ namespace Spentir.Application.Services
                 throw new DomainException("Date is required.");
 
             var targetDate = _dateRangeService.Normalize(date.Value);
-            var yearRange = GetRange(targetDate, 12);
+            (DateOnly Start, DateOnly End) = _rangeCalculator.GetRange(targetDate, 12);
 
-            var yearExpenses = await LoadExpensesAsync(userId, yearRange);
+            var yearExpenses = await _expenseLoader.LoadAsync(userId, Start, End);
 
             var totalSpent = yearExpenses.Sum(e => e.Amount);
 
@@ -88,7 +98,7 @@ namespace Spentir.Application.Services
             var expensesGroups = _aggregateService.GroupExpensesByMonth(yearExpenses);
 
             var categories = CategoryYearAnalyticsDtoBuilder.Build(categoryGroups, totalSpent);
-            var monthlyAnalytics = BuildMonthlyAnalytics(yearRange, 12, totalSpent, expensesGroups);
+            var monthlyAnalytics = _analyticsBuilder.BuildMonthlyAnalytics((Start, End), 12, totalSpent, expensesGroups);
 
             var metrics = _yearAnalyticsCalculator.Calculate(
                 categoryGroups,
@@ -119,9 +129,9 @@ namespace Spentir.Application.Services
                 throw new DomainException("Range must be greater than 1");
 
             var targetDate = _dateRangeService.Normalize(date.Value);
-            var monthRange = GetRange(targetDate, range);
+            (DateOnly Start, DateOnly End) = _rangeCalculator.GetRange(targetDate, range);
 
-            var monthExpenses = await LoadExpensesAsync(userId, monthRange);
+            var monthExpenses = await _expenseLoader.LoadAsync(userId, Start, End);
             var categoryExpenses = monthExpenses.Where(e => e.Category == category).ToList();
 
             var total = monthExpenses.Sum(e => e.Amount);
@@ -129,7 +139,7 @@ namespace Spentir.Application.Services
 
             var expensesGroups = _aggregateService.GroupExpensesByMonth(categoryExpenses);
 
-            var monthlyAnalytics = BuildMonthlyAnalytics(monthRange, range, total, expensesGroups);
+            var monthlyAnalytics = _analyticsBuilder.BuildMonthlyAnalytics((Start, End), range, total, expensesGroups);
 
             var metrics = _categoryTrendCalculator.Calculate(
                 monthExpenses,
@@ -139,40 +149,6 @@ namespace Spentir.Application.Services
                 total);
 
             return CategoryTrendDtoBuilder.Build(metrics, category);
-        }
-
-        private (DateRange current, DateRange previous) GetMonthRanges(DateOnly targetDate, int range)
-        {
-            var (currStart, currEnd) = _dateRangeService.GetMonthRange(targetDate, range);
-            var (prevStart, prevEnd) = _dateRangeService.GetMonthRange(_dateRangeService.GetPreviousMonth(targetDate), range);
-
-            return (new DateRange(currStart, currEnd), new DateRange(prevStart, prevEnd));
-        }
-
-        private DateRange GetRange(DateOnly date, int months)
-        {
-            var (start, end) = _dateRangeService.GetMonthRange(date, months);
-            return new DateRange(start, end);
-        }
-
-        private async Task<List<Expense>> LoadExpensesAsync(Guid userId, DateRange range)
-        {
-            var (items, _) = await _expenseRepository.GetAsync(userId, range.Start, range.End, 1, int.MaxValue);
-
-            return items;
-        }
-
-        private static List<CategoryAnalyticsDto> BuildCategoryAnalytics(IDictionary<ExpenseCategory, CategoryAggregate> current, IDictionary<ExpenseCategory, decimal> previous, decimal totalSpent)
-        {
-            var categories = CategoryAnalyticsDtoBuilder.Build(current, totalSpent);
-            CategoryAnalyticsDtoBuilder.ApplyPreviousMonthComparison(categories, previous);
-            return categories;
-        }
-
-        private List<YearMonthsAnalyticsDto> BuildMonthlyAnalytics(DateRange yearRange, int range, decimal totalSpent, Dictionary<(int Year, int Month), decimal> expensesGroup)
-        {
-            var months = _dateRangeService.GetRollingMonths(yearRange.Start, range);
-            return MonthlyAnalyticsDtoBuilder.Build(totalSpent, expensesGroup, months);
         }
     }
 }

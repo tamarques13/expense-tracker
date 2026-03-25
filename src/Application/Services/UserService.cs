@@ -7,6 +7,13 @@ using Spentir.Application.DTOs;
 
 namespace Spentir.Application.Services
 {
+    /// <summary>
+    /// Application layer service responsible for user registration and authentication.
+    /// Handles email uniqueness validation, secure password hashing, credential verification
+    /// and bearer token generation. Acts as the main entry point for user account creation
+    /// and login operations.
+    /// </summary>
+    
     public class UserService(IUserRepository userRepository) : IUserService
     {
         private readonly IUserRepository _userRepository = userRepository;

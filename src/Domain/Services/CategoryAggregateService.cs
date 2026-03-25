@@ -4,6 +4,12 @@ using Spentir.Domain.Models.ValueObjects;
 
 namespace Spentir.Domain.Services
 {
+    /// <summary>
+    /// Domain service responsible for aggregating expense data into category level
+    /// summaries. Provides grouping operations used by analytics calculations,
+    /// including full category aggregates, simplified totals and month-based
+    /// expense grouping.
+    
     public class CategoryAggregateService : ICategoryAggregateService
     {
 

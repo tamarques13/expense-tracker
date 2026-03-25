@@ -5,6 +5,10 @@ using Spentir.Domain.Models.Entities;
 
 namespace Spentir.Infrastructure.Persistence.Repositories
 {
+    /// <summary>
+    /// Repository responsible for managing <see cref="User"/> persistence.
+    /// </summary>
+    /// 
     public class UserRepository(SpentirDbContext context) : IUserRepository
     {
         private readonly SpentirDbContext _context = context;

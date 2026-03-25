@@ -6,6 +6,13 @@ using Spentir.Application.DTOs;
 
 namespace Spentir.Application.Services
 {
+    /// <summary>
+    /// Application layer service responsible for managing user subscriptions.
+    /// Coordinates repository access, domain operations and DTO mapping.
+    /// Acts as the main entry point for creating, retrieving, updating and
+    /// deleting subscriptions, as well as handling renewal and expiration logic.
+    /// </summary>
+    
     public class SubscriptionService(ISubscriptionRepository subscriptionRepository) : ISubscriptionService
     {
         private readonly ISubscriptionRepository _subscriptionRepository = subscriptionRepository;
@@ -56,12 +63,12 @@ namespace Spentir.Application.Services
         /// <summary>
         /// Retrieves a specific subscription by its identifier for the given user.
         /// </summary>
-        /// <param name="Id">The identifier of the subscription.</param>
+        /// <param name="subscriptionId">The identifier of the subscription.</param>
         /// <param name="userId">The identifier of the user who owns the subscription.</param>
 
-        public async Task<SubscriptionDto> GetSubscriptionByIdAsync(Guid Id, Guid userId)
+        public async Task<SubscriptionDto> GetSubscriptionByIdAsync(Guid subscriptionId, Guid userId)
         {
-            var subscription = await _subscriptionRepository.GetByIdAsync(Id, userId);
+            var subscription = await _subscriptionRepository.GetByIdAsync(subscriptionId, userId);
 
             return subscription.ToSubscriptionDto();
         }
@@ -69,13 +76,13 @@ namespace Spentir.Application.Services
         /// <summary>
         /// Updates an existing subscription with new values.
         /// </summary>
-        /// <param name="Id">The identifier of the subscription to update.</param>
+        /// <param name="subscriptionId">The identifier of the subscription to update.</param>
         /// <param name="dto">The updated subscription data.</param>
         /// <param name="userId">The identifier of the user who owns the subscription.</param>
 
-        public async Task UpdateSubscriptionAsync(Guid Id, CreateSubscriptionDto dto, Guid userId)
+        public async Task UpdateSubscriptionAsync(Guid subscriptionId, CreateSubscriptionDto dto, Guid userId)
         {
-            var subscription = await _subscriptionRepository.GetByIdAsync(Id, userId);
+            var subscription = await _subscriptionRepository.GetByIdAsync(subscriptionId, userId);
 
             subscription.Update(dto.Name, Enum.Parse<ExpenseCategory>(dto.Category), dto.Amount, dto.RenewDay, dto.ExpireDay);
 
@@ -85,12 +92,12 @@ namespace Spentir.Application.Services
         /// <summary>
         /// Toggles the active state of a subscription.
         /// </summary>
-        /// <param name="Id">The identifier of the subscription.</param>
+        /// <param name="subscriptionId">The identifier of the subscription.</param>
         /// <param name="userId">The identifier of the user who owns the subscription.</param>
 
-        public async Task UpdateSubscriptionStateAsync(Guid Id, Guid userId)
+        public async Task UpdateSubscriptionStateAsync(Guid subscriptionId, Guid userId)
         {
-            var subscription = await _subscriptionRepository.GetByIdAsync(Id, userId);
+            var subscription = await _subscriptionRepository.GetByIdAsync(subscriptionId, userId);
 
             subscription.ToggleSubscriptionState();
 
@@ -100,43 +107,29 @@ namespace Spentir.Application.Services
         /// <summary>
         /// Deletes a subscription belonging to the specified user.
         /// </summary>
-        /// <param name="Id">The identifier of the subscription to delete.</param>
+        /// <param name="subscriptionId">The identifier of the subscription to delete.</param>
         /// <param name="userId">The identifier of the user who owns the subscription.</param>
 
-        public async Task DeleteSubscriptionAsync(Guid Id, Guid userId)
+        public async Task DeleteSubscriptionAsync(Guid subscriptionId, Guid userId)
         {
-            var subscription = await _subscriptionRepository.GetByIdAsync(Id, userId);
+            var subscription = await _subscriptionRepository.GetByIdAsync(subscriptionId, userId);
 
             await _subscriptionRepository.DeleteAsync(subscription);
         }
 
         /// <summary>
-        /// Checks whether the specified date matches the renewal day of a subscription expense.
+        /// Updates the subscription's last generated expense date.
+        /// This marks the subscription as having produced its scheduled expense
+        /// for the specified business date, preventing duplicate generation.
         /// </summary>
-        /// <param name="expenseId">The identifier of the subscription-related expense.</param>
-        /// <param name="date">The date to evaluate against the subscription's renewal schedule.</param>
+        /// <param name="subscriptionId">The identifier of the subscription being updated.</param>
+        /// <param name="date">The business date to record as the last generated expense date.</param>
+        /// <param name="userId">The owner of the subscription, used to enforce data access boundaries.</param>
+        /// <param name="cancellationToken">Token used to cancel the operation.</param>
 
-        public async Task<bool> IsSubscriptionRenewDayAsync(Guid expenseId, DateOnly date, CancellationToken cancellationToken = default)
+        public async Task UpdateLastGeneratedDateAsync(Guid subscriptionId, DateOnly date, Guid userId, CancellationToken cancellationToken = default)
         {
-            return await _subscriptionRepository.CheckForSubscriptionRenewDateAsync(expenseId, date, cancellationToken);
-        }
-
-        public async Task<bool> IsSubscriptionExpireDayAsync(Guid expenseId, DateOnly date, CancellationToken cancellationToken = default)
-        {
-            return await _subscriptionRepository.CheckForSubscriptionExpireDateAsync(expenseId, date, cancellationToken);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="Id"></param>
-        /// <param name="date"></param>
-        /// <param name="userId"></param>
-        /// <param name="cancellationToken"></param>
-
-        public async Task UpdateLastGeneratedDateAsync(Guid Id, DateOnly date, Guid userId, CancellationToken cancellationToken = default)
-        {
-            var subscription = await _subscriptionRepository.GetByIdAsync(Id, userId);
+            var subscription = await _subscriptionRepository.GetByIdAsync(subscriptionId, userId);
 
             subscription.SetGeneratedExpenseDate(date);
 
@@ -144,17 +137,39 @@ namespace Spentir.Application.Services
         }
 
         /// <summary>
+        /// Checks whether the specified date matches the renewal day of a subscription expense.
+        /// </summary>
+        /// <param name="subscriptionId">The identifier of the subscription related expense.</param>
+        /// <param name="date">The date to evaluate against the subscription's renewal schedule.</param>
+
+        public async Task<bool> IsSubscriptionRenewDayAsync(Guid subscriptionId, DateOnly date, CancellationToken cancellationToken = default)
+        {
+            return await _subscriptionRepository.CheckForSubscriptionRenewDateAsync(subscriptionId, date, cancellationToken);
+        }
+
+        /// <summary>
+        /// Determines whether the subscription has reached its configured expiration date.
+        /// </summary>
+        /// <param name="subscriptionId">The identifier of the subscription being evaluated.</param>
+        /// <param name="date">The business date used for the expiration check.</param>
+        /// <param name="cancellationToken">Token used to cancel the operation.</param>
+
+        public async Task<bool> IsSubscriptionExpireDayAsync(Guid subscriptionId, DateOnly date, CancellationToken cancellationToken = default)
+        {
+            return await _subscriptionRepository.CheckForSubscriptionExpireDateAsync(subscriptionId, date, cancellationToken);
+        }
+
+        /// <summary>
         /// Determines whether an expense has already been created for a subscription on a specific date.
         /// </summary>
-        /// <param name="category">The category of the subscription related expense.</param>
+        /// <param name="subscriptionId">The identifier of the subscription being evaluated.</param>
         /// <param name="date">The date to check for an existing expense.</param>
         /// <param name="userId"></param>
         /// <param name="cancellationToken"></param>
 
-        public async Task<bool> ExpenseAlreadyCreatedAsync(Guid id, DateOnly date, Guid userId, CancellationToken cancellationToken = default)
+        public async Task<bool> ExpenseAlreadyCreatedAsync(Guid subscriptionId, DateOnly date, Guid userId, CancellationToken cancellationToken = default)
         {
-            return await _subscriptionRepository.ExistsForSubscriptionOnDateAsync(id, date, userId, cancellationToken);
-
+            return await _subscriptionRepository.ExistsForSubscriptionOnDateAsync(subscriptionId, date, userId, cancellationToken);
         }
     }
 }

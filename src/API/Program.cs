@@ -6,7 +6,12 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Spentir.Application.Services.Interfaces;
+using Spentir.Application.Services.Analytics.Interfaces;
 using Spentir.Application.Jobs.Subscription.Interfaces;
+using Spentir.Application.Services.Analytics;
+using Spentir.Application.Services.Analytics.Builders;
+using Spentir.Application.Services.Analytics.Loaders;
+using Spentir.Application.Services.Analytics.Ranges;
 using Spentir.Application.Services;
 using Spentir.Application.Jobs.Subscription;
 using Spentir.Infrastructure.Persistence.Configurations;
@@ -47,6 +52,9 @@ builder.Services.AddScoped<ICategoryAggregateService, CategoryAggregateService>(
 builder.Services.AddScoped<ICategoryTrendCalculator, CategoryTrendCalculator>();
 builder.Services.AddScoped<IMonthAnalyticsCalculator, MonthAnalyticsCalculator>();
 builder.Services.AddScoped<IYearAnalyticsCalculator, YearAnalyticsCalculator>();
+builder.Services.AddScoped<IAnalyticsBuilder, AnalyticsBuilder>();
+builder.Services.AddScoped<IRangeCalculator, RangeCalculator>();
+builder.Services.AddScoped<IExpenseLoader, ExpenseLoader>();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
