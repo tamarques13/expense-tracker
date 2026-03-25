@@ -12,7 +12,7 @@ namespace Spentir.Application.Services
     /// Acts as the main entry point for creating, retrieving, updating and
     /// deleting subscriptions, as well as handling renewal and expiration logic.
     /// </summary>
-    
+
     public class SubscriptionService(ISubscriptionRepository subscriptionRepository) : ISubscriptionService
     {
         private readonly ISubscriptionRepository _subscriptionRepository = subscriptionRepository;
@@ -37,15 +37,15 @@ namespace Spentir.Application.Services
         /// </summary>
         /// <param name="userId">The identifier of the user whose subscriptions are being retrieved.</param>
 
-        public async Task<List<SubscriptionDto>> GetSubscriptionAsync(Guid userId)
+        public async Task<SubscriptionListDto> GetSubscriptionAsync(Guid userId, int page, int pageSize)
         {
-            var subscriptions = await _subscriptionRepository.GetAllAsync(userId);
+            var (subscriptions, totalCount) = await _subscriptionRepository.GetAllAsync(userId, page, pageSize);
 
             var subscritpionsDto = new List<SubscriptionDto>();
 
             foreach (var s in subscriptions) subscritpionsDto.Add(s.ToSubscriptionDto());
 
-            return subscritpionsDto;
+            return SubscriptionToDto.ToListSubscriptionDto(subscritpionsDto, totalCount, page, pageSize);
         }
 
         /// <summary>

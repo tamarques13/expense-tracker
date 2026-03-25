@@ -6,7 +6,7 @@ namespace Spentir.Infrastructure.Persistence.Repositories.Interfaces
     {
         Task AddAsync(Subscription subscription);
         Task UpdateAsync(Subscription subscription, CancellationToken cancellationToken = default);
-        Task<List<Subscription>> GetAllAsync(Guid userId);
+        Task<(List<Subscription>, int TotalCount)> GetAllAsync(Guid userId, int page, int pageSize);
         Task<List<Subscription>> GetAllForBackgroundJobAsync(bool isActive, int page, int pageSize, CancellationToken cancellationToken = default);
         Task<Subscription> GetByIdAsync(Guid Id, Guid userId);
         Task DeleteAsync(Subscription subscription);

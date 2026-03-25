@@ -30,9 +30,9 @@ namespace Spentir.API.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet]
-        public async Task<IActionResult> GetSubscriptions()
+        public async Task<IActionResult> GetSubscriptions(int page = 1, int pageSize = 20)
         {
-            var subscriptionsDto = await _subscriptionService.GetSubscriptionAsync(Guid.Parse(UserId));
+            var subscriptionsDto = await _subscriptionService.GetSubscriptionAsync(Guid.Parse(UserId), page, pageSize);
 
             return Ok(subscriptionsDto);
         }
