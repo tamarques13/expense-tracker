@@ -1,33 +1,3 @@
-- Write down buissness rules and features of the app
-    - Subscriptions are auto inserted into calculations
-    - 
-
-# Subscriptions
-
-Use a Subscription table that stores: start date, optional end date, renewal day, amount, active flag, and last_generated_date.
-
-Add a daily Hangfire recurring job that checks all active subscriptions.
-
-In that job, verify:
-
-    today matches the subscription’s renewal day
-
-    subscription is still active
-
-    end_date is null or not passed
-
-    no entry was generated this month
-
-    -If it should renew, enqueue a background job to insert the monthly transaction.
-
-    After generating, update last_generated_date to avoid duplicates.
-
-    Handle months with fewer days by clamping renewal day to the last valid day.
-
-    Keep the logic idempotent so re-runs don’t create duplicates.
-
-# Refresh tokens 
-
 # Forget Password Flow
 
 # Change User Email / configs

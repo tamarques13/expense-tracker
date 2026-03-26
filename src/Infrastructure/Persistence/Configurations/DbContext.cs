@@ -19,6 +19,7 @@ namespace Spentir.Infrastructure.Persistence.Configurations
         public DbSet<Expense> Expenses { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Subscription> Subscriptions { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -35,7 +36,7 @@ namespace Spentir.Infrastructure.Persistence.Configurations
             .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Expense>()
-           .HasIndex(r => new { r.UserId, r.CreatedAt });
+            .HasIndex(r => new { r.UserId, r.CreatedAt });
 
             modelBuilder.Entity<Subscription>()
             .HasIndex(r => new { r.UserId, r.IsActive, r.ExpireDay, r.LastGenerated });

@@ -1,26 +1,34 @@
 using DotNetEnv;
 using Hangfire;
 using Hangfire.PostgreSql;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+
 using Spentir.Application.Services.Interfaces;
 using Spentir.Application.Services.Analytics.Interfaces;
-using Spentir.Application.Jobs.Subscription.Interfaces;
+using Spentir.Application.Services.Auth.Interfaces;
+using Spentir.Application.Services;
+using Spentir.Application.Services.Auth;
+using Spentir.Application.Services.Auth.Tokens;
 using Spentir.Application.Services.Analytics;
 using Spentir.Application.Services.Analytics.Builders;
 using Spentir.Application.Services.Analytics.Loaders;
 using Spentir.Application.Services.Analytics.Ranges;
-using Spentir.Application.Services;
+using Spentir.Application.Jobs.Subscription.Interfaces;
 using Spentir.Application.Jobs.Subscription;
+
 using Spentir.Infrastructure.Persistence.Configurations;
 using Spentir.Infrastructure.Persistence.Repositories.Interfaces;
 using Spentir.Infrastructure.Persistence.Transactions.Interfaces;
 using Spentir.Infrastructure.Persistence.Repositories;
 using Spentir.Infrastructure.Persistence.Transactions;
+
 using Spentir.Domain.Services.Interfaces;
 using Spentir.Domain.Services;
+
 using Spentir.API.Middleware;
 
 Env.Load();
@@ -41,9 +49,14 @@ builder.Services.AddCors(options => options.AddPolicy("AllowAll", builder => bui
 
 builder.Services.AddScoped<IExpenseRepository, ExpenseRepository>();
 builder.Services.AddScoped<IExpenseService, ExpenseService>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IUserService, UserService>();
+
+builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IAuthToken, AuthToken>();
+
 builder.Services.AddScoped<IAnalyticService, AnalyticService>();
+
 builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
 builder.Services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
 
@@ -56,12 +69,12 @@ builder.Services.AddScoped<IAnalyticsBuilder, AnalyticsBuilder>();
 builder.Services.AddScoped<IRangeCalculator, RangeCalculator>();
 builder.Services.AddScoped<IExpenseLoader, ExpenseLoader>();
 
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-
 builder.Services.AddScoped<ISubscriptionRules, SubscriptionRules>();
 builder.Services.AddScoped<ISubscriptionActions, SubscriptionActions>();
 builder.Services.AddScoped<ISubscriptionProcessor, SubscriptionProcessor>();
 builder.Services.AddScoped<ISubscriptionJob, SubscriptionJob>();
+
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
@@ -126,7 +139,7 @@ using (var scope = app.Services.CreateScope())
     recurringJobs.AddOrUpdate("Create-Subscription-Expense", () => subscriptionJob.CreateSubscriptionsExpenseAsync(), Cron.Daily());
 }
 
-if (app.Environment.IsDevelopment()) 
+if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();

@@ -18,6 +18,7 @@ namespace Spentir.API.Middleware
                 var statusCode = ex switch
                 {
                     DomainException => StatusCodes.Status400BadRequest,
+                    SecurityException => StatusCodes.Status403Forbidden,
                     ArgumentException => StatusCodes.Status400BadRequest,
                     UnauthorizedAccessException => StatusCodes.Status401Unauthorized,
                     KeyNotFoundException => StatusCodes.Status404NotFound,

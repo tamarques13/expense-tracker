@@ -8,5 +8,8 @@ namespace Spentir.API.Controllers.Base
         protected string UserId => User.FindFirst(ClaimTypes.NameIdentifier)?.Value
         ?? User.FindFirst("sub")?.Value
         ?? throw new UnauthorizedAccessException("User ID not found.");
+
+        protected string IpAddress => HttpContext.Connection.RemoteIpAddress?.ToString() ?? "0.0.0.0";
     }
+
 }

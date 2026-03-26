@@ -2,9 +2,10 @@ using Spentir.Domain.Models.Entities;
 
 namespace Spentir.Infrastructure.Persistence.Repositories.Interfaces
 {
-    public interface IUserRepository
+    public interface IAuthRepository
     {
         Task AddAsync(User user);
+        Task<User?> GetByIdAsync(Guid id);
         Task<User?> GetByEmailAsync(string email);
     } 
 }
