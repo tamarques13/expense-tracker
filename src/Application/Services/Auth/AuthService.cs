@@ -83,6 +83,17 @@ namespace Spentir.Application.Services.Auth
             };
         }
 
+        /// <summary>
+        /// Rotates a valid refresh token by revoking the old one and issuing a new pair
+        /// (access token + refresh token). This method enforces refresh token security
+        /// by validating expiration, detecting reuse, and chaining token replacement.
+        /// </summary>
+        /// <param name="Token">The refresh token provided by the client.</param>
+        /// <param name="ipAddress">The IP address of the requesting client, used for auditing.</param>
+        /// <exception cref="KeyNotFoundException">Thrown when the provided refresh token does not exist in the system.</exception>
+        /// <exception cref="UnauthorizedAccessException">Thrown when the refresh token is expired or invalid.</exception>
+        /// <exception cref="SecurityException">Thrown when refresh token reuse is detected (token replay attack).</exception>
+
         public async Task<UserTokenDto> RotateRefreshTokenAsync(string Token, string ipAddress)
         {
             var oldToken = await _refreshTokenRepository.GetByTokenAsync(Token) ?? throw new KeyNotFoundException($"Token: {Token} not found.");
@@ -108,6 +119,12 @@ namespace Spentir.Application.Services.Auth
                 RefreshToken = refreshToken.Token
             };
         }
+
+        /// <summary>
+        /// Logs the user out by revoking all active refresh tokens associated with the user.
+        /// This prevents any further access token generation and effectively ends all sessions.
+        /// </summary>
+        /// <param name="userId">The identifier of the user whose tokens will be revoked.</param>~
 
         public async Task LogOutAsync(Guid userId)
         {
