@@ -59,12 +59,17 @@ namespace Spentir.Infrastructure.Persistence.Repositories
 
         public async Task<bool> CheckForSubscriptionRenewDateAsync(Guid id, DateOnly date, CancellationToken cancellationToken = default)
         {
-            return await _context.Subscriptions.AnyAsync(s => s.Id == id && s.RenewDay.Day == date.Day, cancellationToken);
+            int daysInMonth = DateTime.DaysInMonth(date.Year, date.Month);
+
+            return await _context.Subscriptions.AnyAsync(s => s.Id == id && (s.RenewDay.Day > daysInMonth ? daysInMonth : s.RenewDay.Day) == date.Day, cancellationToken);
         }
 
         public async Task<bool> CheckForSubscriptionExpireDateAsync(Guid id, DateOnly date, CancellationToken cancellationToken = default)
         {
-            return await _context.Subscriptions.AnyAsync(s => s.Id == id && s.ExpireDay != null && s.ExpireDay <= date, cancellationToken);
+            int daysInMonth = DateTime.DaysInMonth(date.Year, date.Month);
+            DateOnly expireDay = new(date.Year, date.Month, daysInMonth);
+
+            return await _context.Subscriptions.AnyAsync(s => s.Id == id && s.ExpireDay != null && (s.ExpireDay > expireDay ? expireDay : s.ExpireDay) <= date, cancellationToken);
         }
 
         public async Task<bool> ExistsForSubscriptionOnDateAsync(Guid id, DateOnly date, Guid userId, CancellationToken cancellationToken = default)
