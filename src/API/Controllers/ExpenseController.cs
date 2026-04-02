@@ -8,7 +8,8 @@ namespace Spentir.API.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("api/expenses")]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/expenses")]
     public class ExpenseController(IExpenseService expenseService) : BaseController
     {
         private readonly IExpenseService _expenseService = expenseService;
