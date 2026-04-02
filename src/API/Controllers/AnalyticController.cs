@@ -8,7 +8,8 @@ namespace Spentir.API.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("api/analytics")]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/analytics")]
     public class AnalyticsController(IAnalyticService analyticsService) : BaseController
     {
         private readonly IAnalyticService _analyticService = analyticsService;

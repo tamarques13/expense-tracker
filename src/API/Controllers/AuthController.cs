@@ -7,8 +7,9 @@ using Spentir.API.Controllers.Base;
 namespace Spentir.API.Controllers
 {
     [AllowAnonymous]
-    [Route("api/auth")]
     [ApiController]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/auth")]
     public class AuthController(IAuthService authService) : BaseController
     {
         private readonly IAuthService _authService = authService;

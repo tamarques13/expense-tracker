@@ -8,7 +8,8 @@ namespace Spentir.API.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("api/subscriptions")]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/subscriptions")]
     public class SubscriptionController(ISubscriptionService subscriptionService) : BaseController
     {
         private readonly ISubscriptionService _subscriptionService = subscriptionService;
