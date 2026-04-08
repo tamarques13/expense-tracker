@@ -1,6 +1,7 @@
 using DotNetEnv;
 using Hangfire;
 using Hangfire.PostgreSql;
+using OpenAI;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -38,6 +39,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING") ?? throw new InvalidOperationException("DB_CONNECTION_STRING environment variable is not set.");
 var secretKey = Environment.GetEnvironmentVariable("SECRET_KEY") ?? throw new InvalidOperationException("SECRET_KEY environment variable is not set.");
+var openAIKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY") ?? throw new InvalidOperationException("AI_KEY environment variable is not set.");
 
 builder.Services.AddDbContext<SpentirDbContext>(options => options.UseNpgsql(connectionString));
 builder.Services.AddControllers();
@@ -76,6 +78,11 @@ builder.Services.AddScoped<ISubscriptionProcessor, SubscriptionProcessor>();
 builder.Services.AddScoped<ISubscriptionJob, SubscriptionJob>();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+builder.Services.AddScoped<IOcrService, TesseractOcrService>();
+
+builder.Services.AddSingleton(new OpenAIClient(openAIKey));
+builder.Services.AddScoped<IReceiptLlmService, ReceiptLlmService>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
