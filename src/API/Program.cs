@@ -79,8 +79,6 @@ builder.Services.AddScoped<ISubscriptionJob, SubscriptionJob>();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-builder.Services.AddScoped<IOcrService, TesseractOcrService>();
-
 builder.Services.AddSingleton(new OpenAIClient(openAIKey));
 builder.Services.AddScoped<IReceiptLlmService, ReceiptLlmService>();
 
