@@ -25,12 +25,10 @@ namespace Spentir.Application.Services
             var messages = new List<ChatMessage>
             {
                 new SystemChatMessage(SystemPrompt),
-                new UserChatMessage(
-                    [
+                new UserChatMessage([
                         ChatMessageContentPart.CreateTextPart("Describe this image:"),
                         ChatMessageContentPart.CreateImagePart(data, "image/png", ChatImageDetailLevel.Low)
-                    ]
-)
+                    ])
             };
 
             ChatCompletion completion = await client.CompleteChatAsync(

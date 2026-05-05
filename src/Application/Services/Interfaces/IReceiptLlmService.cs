@@ -1,5 +1,3 @@
-using Spentir.Application.DTOs;
-using OpenAI.Chat;
 using System.Text.Json;
 namespace Spentir.Application.Services.Interfaces
 {
