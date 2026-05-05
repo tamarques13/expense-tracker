@@ -1,9 +1,10 @@
 using Spentir.Application.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Spentir.API.Controllers
 {
-    using Microsoft.AspNetCore.Mvc;
-
+    [Authorize]
     [ApiController]
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/AI")]
@@ -14,9 +15,7 @@ namespace Spentir.API.Controllers
         [HttpPost("Extract")]
         public async Task<ActionResult<string>> ExtractStruture(IFormFile image, CancellationToken cancellationToken)
         {
-            if (image == null || image.Length == 0)
-                return BadRequest("Image file is required.");
-
+            if (image == null || image.Length == 0) return BadRequest("Image file is required.");
             await using var stream = image.OpenReadStream();
 
             var value = await _receiptLlmService.StructureReceiptAsync(stream, cancellationToken);
@@ -24,5 +23,4 @@ namespace Spentir.API.Controllers
             return Ok(value);
         }
     }
-
 }
