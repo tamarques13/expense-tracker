@@ -1,6 +1,6 @@
-using Spentir.Domain.Services.Interfaces;
+using ExpenseTracker.Domain.Services.Interfaces;
 
-namespace Spentir.Domain.Services
+namespace ExpenseTracker.Domain.Services
 {
     /// <summary>
     /// Domain service that provides date normalization and range calculations used

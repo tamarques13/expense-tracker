@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using Spentir.Domain.Models.Entities;
+using ExpenseTracker.Domain.Models.Entities;
 
-namespace Spentir.Infrastructure.Persistence.Configurations
+namespace ExpenseTracker.Infrastructure.Persistence.Configurations
 {
     /// <summary>
     /// Primary EF Core database context for the Spentir application.

@@ -1,6 +1,6 @@
-using Spentir.Domain.Models.Entities;
+using ExpenseTracker.Domain.Models.Entities;
 
-namespace Spentir.Application.Services.Analytics.Interfaces
+namespace ExpenseTracker.Application.Services.Analytics.Interfaces
 {
     /// <summary>
     /// Loads expense data for analytics operations.

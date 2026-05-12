@@ -1,8 +1,8 @@
-using Spentir.Application.DTOs.Analytics;
-using Spentir.Domain.Models.Entities;
-using Spentir.Domain.Models.ValueObjects;
+using ExpenseTracker.Application.DTOs.Analytics;
+using ExpenseTracker.Domain.Models.Entities;
+using ExpenseTracker.Domain.Models.ValueObjects;
 
-namespace Spentir.Domain.Services.Interfaces
+namespace ExpenseTracker.Domain.Services.Interfaces
 {
     public interface ICategoryTrendCalculator
     {

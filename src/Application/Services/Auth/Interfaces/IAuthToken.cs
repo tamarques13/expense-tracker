@@ -1,6 +1,6 @@
-using Spentir.Domain.Models.Entities;
+using ExpenseTracker.Domain.Models.Entities;
 
-namespace Spentir.Application.Services.Auth.Interfaces
+namespace ExpenseTracker.Application.Services.Auth.Interfaces
 {
     public interface IAuthToken
     {

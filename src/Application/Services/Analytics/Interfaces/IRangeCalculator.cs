@@ -1,6 +1,6 @@
-using Spentir.Domain.Models.ValueObjects;
+using ExpenseTracker.Domain.Models.ValueObjects;
 
-namespace Spentir.Application.Services.Analytics.Interfaces
+namespace ExpenseTracker.Application.Services.Analytics.Interfaces
 {
     /// <summary>
     /// Provides based date range calculations for analytics.

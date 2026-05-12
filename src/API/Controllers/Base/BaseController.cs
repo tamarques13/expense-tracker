@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
-namespace Spentir.API.Controllers.Base
+namespace ExpenseTracker.API.Controllers.Base
 {
     public abstract class BaseController : ControllerBase
     {

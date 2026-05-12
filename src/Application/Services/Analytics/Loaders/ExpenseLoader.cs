@@ -1,8 +1,8 @@
-using Spentir.Infrastructure.Persistence.Repositories.Interfaces;
-using Spentir.Application.Services.Analytics.Interfaces;
-using Spentir.Domain.Models.Entities;
+using ExpenseTracker.Infrastructure.Persistence.Repositories.Interfaces;
+using ExpenseTracker.Application.Services.Analytics.Interfaces;
+using ExpenseTracker.Domain.Models.Entities;
 
-namespace Spentir.Application.Services.Analytics.Loaders
+namespace ExpenseTracker.Application.Services.Analytics.Loaders
 {
     /// <summary>
     /// Loads expense data for analytics operations.

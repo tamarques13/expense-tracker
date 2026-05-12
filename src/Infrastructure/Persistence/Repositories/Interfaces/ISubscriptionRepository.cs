@@ -1,6 +1,6 @@
-using Spentir.Domain.Models.Entities;
+using ExpenseTracker.Domain.Models.Entities;
 
-namespace Spentir.Infrastructure.Persistence.Repositories.Interfaces
+namespace ExpenseTracker.Infrastructure.Persistence.Repositories.Interfaces
 {
     public interface ISubscriptionRepository
     {

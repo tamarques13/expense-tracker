@@ -1,11 +1,11 @@
-using Spentir.Infrastructure.Persistence.Repositories.Interfaces;
-using Spentir.Application.Services.Auth.Interfaces;
-using Spentir.Domain.Models.Entities;
-using Spentir.Infrastructure.Security;
-using Spentir.Domain.Exceptions;
-using Spentir.Application.DTOs;
+using ExpenseTracker.Infrastructure.Persistence.Repositories.Interfaces;
+using ExpenseTracker.Application.Services.Auth.Interfaces;
+using ExpenseTracker.Domain.Models.Entities;
+using ExpenseTracker.Infrastructure.Security;
+using ExpenseTracker.Domain.Exceptions;
+using ExpenseTracker.Application.DTOs;
 
-namespace Spentir.Application.Services.Auth
+namespace ExpenseTracker.Application.Services.Auth
 {
     /// <summary>
     /// Application layer service responsible for user registration and authentication.

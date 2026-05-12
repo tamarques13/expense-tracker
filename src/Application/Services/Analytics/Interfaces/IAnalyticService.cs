@@ -1,7 +1,7 @@
-using Spentir.Domain.Models.Entities;
-using Spentir.Application.DTOs.Analytics;
+using ExpenseTracker.Domain.Models.Entities;
+using ExpenseTracker.Application.DTOs.Analytics;
 
-namespace Spentir.Application.Services.Analytics.Interfaces
+namespace ExpenseTracker.Application.Services.Analytics.Interfaces
 {
     public interface IAnalyticService
     {

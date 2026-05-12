@@ -1,10 +1,10 @@
-using Spentir.Infrastructure.Persistence.Repositories.Interfaces;
-using Spentir.Application.Services.Interfaces;
-using Spentir.Domain.Models.Entities;
-using Spentir.Application.Mappers;
-using Spentir.Application.DTOs;
+using ExpenseTracker.Infrastructure.Persistence.Repositories.Interfaces;
+using ExpenseTracker.Application.Services.Interfaces;
+using ExpenseTracker.Domain.Models.Entities;
+using ExpenseTracker.Application.Mappers;
+using ExpenseTracker.Application.DTOs;
 
-namespace Spentir.Application.Services
+namespace ExpenseTracker.Application.Services
 {
     /// <summary>
     /// Application layer service responsible for managing user subscriptions.

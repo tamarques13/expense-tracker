@@ -1,4 +1,4 @@
-namespace Spentir.Application.DTOs.Analytics
+namespace ExpenseTracker.Application.DTOs.Analytics
 {
     public class SpendingCategory
     {

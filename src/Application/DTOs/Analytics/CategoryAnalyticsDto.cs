@@ -1,6 +1,6 @@
-using Spentir.Domain.Models.Entities;
+using ExpenseTracker.Domain.Models.Entities;
 
-namespace Spentir.Application.DTOs.Analytics
+namespace ExpenseTracker.Application.DTOs.Analytics
 {
     public class CategoryTrendDto
     {

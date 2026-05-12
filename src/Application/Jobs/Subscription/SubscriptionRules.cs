@@ -1,8 +1,8 @@
-using Spentir.Application.DTOs;
-using Spentir.Application.Jobs.Subscription.Interfaces;
-using Spentir.Application.Services.Interfaces;
+using ExpenseTracker.Application.DTOs;
+using ExpenseTracker.Application.Jobs.Subscription.Interfaces;
+using ExpenseTracker.Application.Services.Interfaces;
 
-namespace Spentir.Application.Jobs.Subscription
+namespace ExpenseTracker.Application.Jobs.Subscription
 {
     /// <summary>
     /// Encapsulates the business rule evaluations used during subscription processing.

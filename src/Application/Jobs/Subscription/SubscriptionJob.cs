@@ -1,8 +1,8 @@
-using Spentir.Application.Jobs.Subscription.Interfaces;
-using Spentir.Application.Services.Interfaces;
-using Spentir.Application.DTOs;
+using ExpenseTracker.Application.Jobs.Subscription.Interfaces;
+using ExpenseTracker.Application.Services.Interfaces;
+using ExpenseTracker.Application.DTOs;
 
-namespace Spentir.Application.Jobs.Subscription
+namespace ExpenseTracker.Application.Jobs.Subscription
 {
     /// <summary>
     /// Background job responsible for processing active subscriptions in scalable batches.

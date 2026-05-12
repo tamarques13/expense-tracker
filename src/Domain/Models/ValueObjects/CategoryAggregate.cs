@@ -1,4 +1,4 @@
-namespace Spentir.Domain.Models.ValueObjects
+namespace ExpenseTracker.Domain.Models.ValueObjects
 {
     public record CategoryAggregate(
         decimal Total,

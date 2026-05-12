@@ -1,6 +1,6 @@
-using Spentir.Application.DTOs;
+using ExpenseTracker.Application.DTOs;
 
-namespace Spentir.Application.Services.Auth.Interfaces
+namespace ExpenseTracker.Application.Services.Auth.Interfaces
 {
     public interface IAuthService
     {

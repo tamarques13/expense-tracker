@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using Spentir.Domain.Exceptions;
+using ExpenseTracker.Domain.Exceptions;
 
-namespace Spentir.API.Middleware
+namespace ExpenseTracker.API.Middleware
 {
     internal sealed class GlobalExceptionHandlerMiddleware(RequestDelegate next, ILogger<GlobalExceptionHandlerMiddleware> logger)
     {

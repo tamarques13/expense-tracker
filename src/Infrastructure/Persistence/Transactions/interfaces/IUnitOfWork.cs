@@ -1,4 +1,4 @@
-namespace Spentir.Infrastructure.Persistence.Transactions.Interfaces
+namespace ExpenseTracker.Infrastructure.Persistence.Transactions.Interfaces
 {
     public interface IUnitOfWork
     {

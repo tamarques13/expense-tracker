@@ -1,6 +1,6 @@
-using Spentir.Domain.Models.Entities;
+using ExpenseTracker.Domain.Models.Entities;
 
-namespace Spentir.UnitTests.Helpers.Entities
+namespace ExpenseTracker.UnitTests.Helpers.Entities
 {
     public class CreateUserEntities
     {

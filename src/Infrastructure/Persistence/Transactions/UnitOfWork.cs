@@ -1,7 +1,7 @@
-using Spentir.Infrastructure.Persistence.Transactions.Interfaces;
-using Spentir.Infrastructure.Persistence.Configurations;
+using ExpenseTracker.Infrastructure.Persistence.Transactions.Interfaces;
+using ExpenseTracker.Infrastructure.Persistence.Configurations;
 
-namespace Spentir.Infrastructure.Persistence.Transactions
+namespace ExpenseTracker.Infrastructure.Persistence.Transactions
 {
     /// <summary>
     /// Provides a transactional execution boundary for operations that must succeed or fail as a unit.

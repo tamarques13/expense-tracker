@@ -1,7 +1,7 @@
-using Spentir.Domain.Models.Entities;
-using Spentir.Application.DTOs;
+using ExpenseTracker.Domain.Models.Entities;
+using ExpenseTracker.Application.DTOs;
 
-namespace Spentir.UnitTests.Helpers.Entities
+namespace ExpenseTracker.UnitTests.Helpers.Entities
 {
     public class CreateExpenseEntities
     {

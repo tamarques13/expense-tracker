@@ -1,6 +1,6 @@
-using Spentir.Application.DTOs;
+using ExpenseTracker.Application.DTOs;
 
-namespace Spentir.Application.Jobs.Subscription.Interfaces
+namespace ExpenseTracker.Application.Jobs.Subscription.Interfaces
 {
     public interface ISubscriptionRules
     {

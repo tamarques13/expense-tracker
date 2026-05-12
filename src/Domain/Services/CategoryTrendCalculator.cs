@@ -1,9 +1,9 @@
-using Spentir.Domain.Services.Interfaces;
-using Spentir.Application.DTOs.Analytics;
-using Spentir.Domain.Models.Entities;
-using Spentir.Domain.Models.ValueObjects;
+using ExpenseTracker.Domain.Services.Interfaces;
+using ExpenseTracker.Application.DTOs.Analytics;
+using ExpenseTracker.Domain.Models.Entities;
+using ExpenseTracker.Domain.Models.ValueObjects;
 
-namespace Spentir.Domain.Services
+namespace ExpenseTracker.Domain.Services
 {
     /// <summary>
     /// Domain service responsible for calculating spending trends for a specific

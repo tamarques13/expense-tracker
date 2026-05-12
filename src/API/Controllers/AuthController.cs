@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Spentir.Application.Services.Auth.Interfaces;
-using Spentir.Application.DTOs;
-using Spentir.API.Controllers.Base;
+using ExpenseTracker.Application.Services.Auth.Interfaces;
+using ExpenseTracker.Application.DTOs;
+using ExpenseTracker.API.Controllers.Base;
 
-namespace Spentir.API.Controllers
+namespace ExpenseTracker.API.Controllers
 {
     [AllowAnonymous]
     [ApiController]

@@ -9,29 +9,29 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
-using Spentir.Application.Services.Interfaces;
-using Spentir.Application.Services.Analytics.Interfaces;
-using Spentir.Application.Services.Auth.Interfaces;
-using Spentir.Application.Services;
-using Spentir.Application.Services.Auth;
-using Spentir.Application.Services.Auth.Tokens;
-using Spentir.Application.Services.Analytics;
-using Spentir.Application.Services.Analytics.Builders;
-using Spentir.Application.Services.Analytics.Loaders;
-using Spentir.Application.Services.Analytics.Ranges;
-using Spentir.Application.Jobs.Subscription.Interfaces;
-using Spentir.Application.Jobs.Subscription;
+using ExpenseTracker.Application.Services.Interfaces;
+using ExpenseTracker.Application.Services.Analytics.Interfaces;
+using ExpenseTracker.Application.Services.Auth.Interfaces;
+using ExpenseTracker.Application.Services;
+using ExpenseTracker.Application.Services.Auth;
+using ExpenseTracker.Application.Services.Auth.Tokens;
+using ExpenseTracker.Application.Services.Analytics;
+using ExpenseTracker.Application.Services.Analytics.Builders;
+using ExpenseTracker.Application.Services.Analytics.Loaders;
+using ExpenseTracker.Application.Services.Analytics.Ranges;
+using ExpenseTracker.Application.Jobs.Subscription.Interfaces;
+using ExpenseTracker.Application.Jobs.Subscription;
 
-using Spentir.Infrastructure.Persistence.Configurations;
-using Spentir.Infrastructure.Persistence.Repositories.Interfaces;
-using Spentir.Infrastructure.Persistence.Transactions.Interfaces;
-using Spentir.Infrastructure.Persistence.Repositories;
-using Spentir.Infrastructure.Persistence.Transactions;
+using ExpenseTracker.Infrastructure.Persistence.Configurations;
+using ExpenseTracker.Infrastructure.Persistence.Repositories.Interfaces;
+using ExpenseTracker.Infrastructure.Persistence.Transactions.Interfaces;
+using ExpenseTracker.Infrastructure.Persistence.Repositories;
+using ExpenseTracker.Infrastructure.Persistence.Transactions;
 
-using Spentir.Domain.Services.Interfaces;
-using Spentir.Domain.Services;
+using ExpenseTracker.Domain.Services.Interfaces;
+using ExpenseTracker.Domain.Services;
 
-using Spentir.API.Middleware;
+using ExpenseTracker.API.Middleware;
 
 Env.Load();
 

@@ -1,6 +1,6 @@
-using Spentir.Application.DTOs.Analytics;
+using ExpenseTracker.Application.DTOs.Analytics;
 
-namespace Spentir.Domain.Models.ValueObjects
+namespace ExpenseTracker.Domain.Models.ValueObjects
 {
     public record YearAnalyticsMetrics(
         decimal Total,

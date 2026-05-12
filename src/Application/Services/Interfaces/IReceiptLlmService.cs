@@ -1,5 +1,5 @@
 using System.Text.Json;
-namespace Spentir.Application.Services.Interfaces
+namespace ExpenseTracker.Application.Services.Interfaces
 {
     public interface IReceiptLlmService
     {

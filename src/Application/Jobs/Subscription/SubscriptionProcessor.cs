@@ -1,7 +1,7 @@
-using Spentir.Application.DTOs;
-using Spentir.Application.Jobs.Subscription.Interfaces;
+using ExpenseTracker.Application.DTOs;
+using ExpenseTracker.Application.Jobs.Subscription.Interfaces;
 
-namespace Spentir.Application.Jobs.Subscription
+namespace ExpenseTracker.Application.Jobs.Subscription
 {
     /// <summary>
     /// Coordinates the execution of subscription business rules and actions.

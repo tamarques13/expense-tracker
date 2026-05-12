@@ -1,8 +1,8 @@
-using Spentir.Domain.Services.Interfaces;
-using Spentir.Domain.Models.Entities;
-using Spentir.Domain.Models.ValueObjects;
+using ExpenseTracker.Domain.Services.Interfaces;
+using ExpenseTracker.Domain.Models.Entities;
+using ExpenseTracker.Domain.Models.ValueObjects;
 
-namespace Spentir.Domain.Services
+namespace ExpenseTracker.Domain.Services
 {
     /// <summary>
     /// Domain service responsible for aggregating expense data into category level

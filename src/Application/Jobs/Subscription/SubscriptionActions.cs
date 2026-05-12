@@ -1,9 +1,9 @@
-using Spentir.Application.DTOs;
-using Spentir.Application.Jobs.Subscription.Interfaces;
-using Spentir.Application.Services.Interfaces;
-using Spentir.Infrastructure.Persistence.Transactions.Interfaces;
+using ExpenseTracker.Application.DTOs;
+using ExpenseTracker.Application.Jobs.Subscription.Interfaces;
+using ExpenseTracker.Application.Services.Interfaces;
+using ExpenseTracker.Infrastructure.Persistence.Transactions.Interfaces;
 
-namespace Spentir.Application.Jobs.Subscription
+namespace ExpenseTracker.Application.Jobs.Subscription
 {
     /// <summary>
     /// Defines the side effect operations executed during subscription processing.
