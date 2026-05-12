@@ -1,9 +1,9 @@
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using Spentir.Domain.Models.Entities;
+using ExpenseTracker.Domain.Models.Entities;
 
-namespace Spentir.Infrastructure.Security
+namespace ExpenseTracker.Infrastructure.Security
 {
     /// <summary>
     /// Provides functionality for generating JSON Web Tokens (JWT) for authenticated users.

@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using Spentir.Infrastructure.Persistence.Configurations;
+using ExpenseTracker.Infrastructure.Persistence.Configurations;
 
 #nullable disable
 
-namespace Spentir.Migrations
+namespace ExpenseTracker.Migrations
 {
     [DbContext(typeof(SpentirDbContext))]
     [Migration("20260314222815_InitialCreate")]

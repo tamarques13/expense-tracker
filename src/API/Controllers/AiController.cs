@@ -1,8 +1,8 @@
-using Spentir.Application.Services.Interfaces;
+using ExpenseTracker.Application.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Spentir.API.Controllers
+namespace ExpenseTracker.API.Controllers
 {
     [Authorize]
     [ApiController]

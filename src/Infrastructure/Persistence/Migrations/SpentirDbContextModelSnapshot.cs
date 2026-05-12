@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using Spentir.Infrastructure.Persistence.Configurations;
+using ExpenseTracker.Infrastructure.Persistence.Configurations;
 
 #nullable disable
 
-namespace Spentir.Migrations
+namespace ExpenseTracker.Migrations
 {
     [DbContext(typeof(SpentirDbContext))]
     partial class SpentirDbContextModelSnapshot : ModelSnapshot

@@ -1,7 +1,7 @@
-using Spentir.Domain.Models.Entities;
-using Spentir.Application.DTOs;
+using ExpenseTracker.Domain.Models.Entities;
+using ExpenseTracker.Application.DTOs;
 
-namespace Spentir.Application.Mappers
+namespace ExpenseTracker.Application.Mappers
 {
     public static class SubscriptionToDto
     {

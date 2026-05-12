@@ -1,4 +1,4 @@
-namespace Spentir.Domain.Services.Interfaces
+namespace ExpenseTracker.Domain.Services.Interfaces
 {
     public interface IDateRangeService
     {

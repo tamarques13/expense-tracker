@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
-namespace Spentir.Infrastructure.Persistence.Configurations
+namespace ExpenseTracker.Infrastructure.Persistence.Configurations
 {
     public class SpentirDbContextFactory : IDesignTimeDbContextFactory<SpentirDbContext>
     {

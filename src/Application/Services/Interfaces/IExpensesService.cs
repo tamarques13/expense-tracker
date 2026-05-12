@@ -1,7 +1,7 @@
-using Spentir.Application.DTOs;
-using Spentir.Domain.Models.Entities;
+using ExpenseTracker.Application.DTOs;
+using ExpenseTracker.Domain.Models.Entities;
 
-namespace Spentir.Application.Services.Interfaces
+namespace ExpenseTracker.Application.Services.Interfaces
 {
     public interface IExpenseService
     {

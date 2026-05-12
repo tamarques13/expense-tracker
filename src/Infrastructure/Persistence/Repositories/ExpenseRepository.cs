@@ -1,9 +1,9 @@
-using Spentir.Infrastructure.Persistence.Repositories.Interfaces;
-using Spentir.Infrastructure.Persistence.Configurations;
-using Spentir.Domain.Models.Entities;
+using ExpenseTracker.Infrastructure.Persistence.Repositories.Interfaces;
+using ExpenseTracker.Infrastructure.Persistence.Configurations;
+using ExpenseTracker.Domain.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Spentir.Infrastructure.Persistence.Repositories
+namespace ExpenseTracker.Infrastructure.Persistence.Repositories
 {
     /// <summary>
     /// Repository responsible for managing <see cref="Expense"/> persistence.

@@ -1,6 +1,6 @@
-using Spentir.Domain.Exceptions;
+using ExpenseTracker.Domain.Exceptions;
 
-namespace Spentir.Domain.Models.Entities
+namespace ExpenseTracker.Domain.Models.Entities
 {
     public class Subscription
     {

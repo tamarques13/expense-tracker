@@ -1,4 +1,4 @@
-namespace Spentir.Application.Jobs.Subscription.Interfaces
+namespace ExpenseTracker.Application.Jobs.Subscription.Interfaces
 {
     public interface ISubscriptionJob
     {

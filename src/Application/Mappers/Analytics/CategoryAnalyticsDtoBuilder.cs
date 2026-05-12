@@ -1,8 +1,8 @@
-using Spentir.Domain.Models.Entities;
-using Spentir.Domain.Models.ValueObjects;
-using Spentir.Application.DTOs.Analytics;
+using ExpenseTracker.Domain.Models.Entities;
+using ExpenseTracker.Domain.Models.ValueObjects;
+using ExpenseTracker.Application.DTOs.Analytics;
 
-namespace Spentir.Application.Mappers.Analytics
+namespace ExpenseTracker.Application.Mappers.Analytics
 {
     public class CategoryAnalyticsDtoBuilder
     {

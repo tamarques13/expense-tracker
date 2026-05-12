@@ -1,6 +1,6 @@
 using OpenAI;
 using OpenAI.Chat;
-using Spentir.Application.Services.Interfaces;
+using ExpenseTracker.Application.Services.Interfaces;
 using System.Text.Json;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Png;
@@ -8,7 +8,7 @@ using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 
 
-namespace Spentir.Application.Services
+namespace ExpenseTracker.Application.Services
 {
     public sealed class ReceiptLlmService : IReceiptLlmService
     {

@@ -1,9 +1,9 @@
-using Spentir.Infrastructure.Persistence.Repositories.Interfaces;
-using Spentir.Application.Services.Auth.Interfaces;
-using Spentir.Domain.Models.Entities;
-using Spentir.Domain.Exceptions;
+using ExpenseTracker.Infrastructure.Persistence.Repositories.Interfaces;
+using ExpenseTracker.Application.Services.Auth.Interfaces;
+using ExpenseTracker.Domain.Models.Entities;
+using ExpenseTracker.Domain.Exceptions;
 
-namespace Spentir.Application.Services.Auth.Tokens
+namespace ExpenseTracker.Application.Services.Auth.Tokens
 {
     /// <summary>
     /// Provides security operations for refresh tokens, including validation,

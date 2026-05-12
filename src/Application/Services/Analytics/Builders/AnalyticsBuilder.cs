@@ -1,11 +1,11 @@
-using Spentir.Application.Services.Analytics.Interfaces;
-using Spentir.Application.DTOs.Analytics;
-using Spentir.Application.Mappers.Analytics;
-using Spentir.Domain.Models.ValueObjects;
-using Spentir.Domain.Models.Entities;
-using Spentir.Domain.Services.Interfaces;
+using ExpenseTracker.Application.Services.Analytics.Interfaces;
+using ExpenseTracker.Application.DTOs.Analytics;
+using ExpenseTracker.Application.Mappers.Analytics;
+using ExpenseTracker.Domain.Models.ValueObjects;
+using ExpenseTracker.Domain.Models.Entities;
+using ExpenseTracker.Domain.Services.Interfaces;
 
-namespace Spentir.Application.Services.Analytics.Builders
+namespace ExpenseTracker.Application.Services.Analytics.Builders
 {
     /// <summary>
     /// Builds category level analytics.

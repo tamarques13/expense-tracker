@@ -1,4 +1,4 @@
-namespace Spentir.Infrastructure.Security
+namespace ExpenseTracker.Infrastructure.Security
 {
     /// <summary>
     /// Provides password hashing and verification utilities using BCrypt enhanced hashing.

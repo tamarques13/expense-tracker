@@ -1,4 +1,4 @@
-namespace Spentir.Application.DTOs
+namespace ExpenseTracker.Application.DTOs
 {
     public class ExpenseDto
     {

@@ -1,11 +1,11 @@
-using Spentir.Application.Services.Analytics.Interfaces;
-using Spentir.Application.Mappers.Analytics;
-using Spentir.Application.DTOs.Analytics;
-using Spentir.Domain.Services.Interfaces;
-using Spentir.Domain.Models.Entities;
-using Spentir.Domain.Exceptions;
+using ExpenseTracker.Application.Services.Analytics.Interfaces;
+using ExpenseTracker.Application.Mappers.Analytics;
+using ExpenseTracker.Application.DTOs.Analytics;
+using ExpenseTracker.Domain.Services.Interfaces;
+using ExpenseTracker.Domain.Models.Entities;
+using ExpenseTracker.Domain.Exceptions;
 
-namespace Spentir.Application.Services.Analytics
+namespace ExpenseTracker.Application.Services.Analytics
 {
     /// <summary>
     /// Application layer service responsible for generating all analytics reports.

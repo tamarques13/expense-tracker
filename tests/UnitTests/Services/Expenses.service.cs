@@ -1,11 +1,11 @@
 using Moq;
-using Spentir.Infrastructure.Persistence.Repositories.Interfaces;
-using Spentir.Domain.Services.Interfaces;
-using Spentir.Application.Services;
-using Spentir.UnitTests.Helpers.Entities;
-using Spentir.Domain.Models.Entities;
+using ExpenseTracker.Infrastructure.Persistence.Repositories.Interfaces;
+using ExpenseTracker.Domain.Services.Interfaces;
+using ExpenseTracker.Application.Services;
+using ExpenseTracker.UnitTests.Helpers.Entities;
+using ExpenseTracker.Domain.Models.Entities;
 
-namespace Spentir.UnitTests.Services
+namespace ExpenseTracker.UnitTests.Services
 {
     public class ExpenseServiceTests
     {

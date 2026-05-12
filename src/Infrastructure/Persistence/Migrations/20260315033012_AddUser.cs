@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Spentir.Migrations
+namespace ExpenseTracker.Migrations
 {
     /// <inheritdoc />
     public partial class AddUser : Migration
