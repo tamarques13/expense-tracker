@@ -1,19 +1,38 @@
 # Expense Tracker
+![CI](https://github.com/tamarques13/expense-tracker/actions/workflows/dotnet-ci.yml/badge.svg)
+![.NET](https://img.shields.io/badge/.NET-8.0-purple)
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
 
 ## Overview
 Expense Tracker is a robust application designed to manage and analyze your expenses. It provides features such as expense tracking, subscription management, analytics, and authentication.
 
 ## Project Structure
 
+## Features
+- **JWT Authentication**: Secure user authentication and authorization.
+- **Refresh Tokens**: Extend user sessions securely with refresh token support.
+- **Hangfire Integration**: Background job processing for tasks like checking subscriptions renewal day.
+- **PostegreSQL Server Support**: Robust database integration for managing expenses, subscriptions and analytics.
+- **AI Integration**: Support system to extract data from receipt images. 
+- **Security Utilities**: Includes password hashing and token generation utilities.
+- **Modular Architecture**: Organized into controllers, services, repositories and DTOs for maintainability.
+
 ### Solution
 - **ExpenseTracker.sln**: The main solution file containing the ExpenseTracker and UnitTests projects.
 
 ### Source Code
 - **src/**: Contains the main application code.
-  - **API/**: Includes controllers for handling API requests.
-  - **Application/**: Contains DTOs, jobs, mappers, and services.
-  - **Domain/**: Defines models, exceptions, and domain services.
-  - **Infrastructure/**: Handles persistence, security, and other infrastructure concerns.
+  - **Infrastructure/Persistence/**: Contains the `AppDbContext` for database interactions.
+  - **Infrastructure/Security/**: Security utilities like `PasswordHasher` and `TokenGenerater`.
+  - **Infrastructure/Migrations/**: Entity Framework migrations for database schema.
+  - **Application/DTOs/**: Data Transfer Objects for API requests and responses.
+  - **Application/Services/**: Business logic layer with interfaces and implementations, including `AuthService`, `ReservationService`, and `AdminReservationService`.
+  - **Application/Services/Auth/Tokens/**: Handles token related logic, such as `AuthToken`.
+  - **Application/Services/Reservations/Capacity/**: Manages reservation capacity logic.
+  - **Application/Jobs/**: Background jobs managed by Hangfire.
+  - **Domain/Models/**: Entity models like `Reservation`, `Resource`, `User`, and `RefreshToken`.
+  - **API/Middleware/**: Custom middleware like `ErrorHandlingMiddleware`.
+  - **API/Controllers/**: Handles API endpoints (e.g., `AuthController`, `ReservationController`, `ResourceController`).
 
 ### Tests
 - **tests/**: Contains unit tests for the application.
@@ -82,48 +101,53 @@ Expense Tracker is a robust application designed to manage and analyze your expe
   volumes:
     pg_data:
   ```
-
-### Configuration
-- **appsettings.json**: Default application settings.
-  ```json
-  {
-    "Logging": {
-      "LogLevel": {
-        "Default": "Information",
-        "Microsoft.AspNetCore": "Warning"
-      }
-    },
-    "AllowedHosts": "*"
-  }
-  ```
-
-- **appsettings.Development.json**: Development-specific settings.
-  ```json
-  {
-    "Logging": {
-      "LogLevel": {
-        "Default": "Information",
-        "Microsoft.AspNetCore": "Warning"
-      }
-    }
-  }
-  ```
-
+  
 ## How to Run
 
 ### Prerequisites
-- .NET 8.0 SDK
+- .NET SDK 8.0 or later
+- PostegreSQL Server
 - Docker
-- PostgreSQL
+- Git Bash (for generating secret keys)
 
 ### Steps
-1. Clone the repository.
-2. Build the Docker image:
+1. Clone the repository:
    ```bash
-   docker-compose up --build
+   git clone https://github.com/tamarques13/expense-tracker.git
+   cd expense-tracker
    ```
-3. Access the API at `http://localhost:8080`.
-
+2. Restore dependencies:
+   ```bash
+   dotnet restore
+   ```
+3. Configure environment variables in a `.env` file:
+   ```env
+   DB_CONNECTION_STRING=your-database-connection-string
+   POSTGRES_DB=your-postgres-db
+   POSTGRES_USER=your-postgres-user
+   POSTGRES_PASSWORD=your-postgres-password
+   SECRET_KEY=your-secret-key (see below for generating one)
+   ISSUER=your-jwt-issuer
+   AUDIENCE=your-jwt-audience
+   OPENAI_API_KEY=your-openai-key
+   ```
+   - `DB_CONNECTION_STRING`: Connection string for your SQL Server database.
+   - `POSTGRES_DB`: Value used as the name of Database
+   - `POSTGRES_USER`: Value used as teh name of the User to connect to Database
+   - `POSTGRES_PASSWORD`: Value used as teh name of the Password to connect to Database
+   - `SECRET_KEY`: A secure key for JWT signing (see the "Generate Environment Secret Key" section below).
+   - `ISSUER`: The issuer of the JWT (e.g., your API name).
+   - `AUDIENCE`: The audience for the JWT (e.g., your client application).
+   - `OPENAI_API_KEY`: A secure key to connect to OpenAI
+4. Apply migrations to the database:
+   ```bash
+   dotnet ef database update
+   ```
+5. Run the application:
+   ```bash
+   dotnet run
+   ```
+   
 ## Testing
 
 ### Unit Tests
