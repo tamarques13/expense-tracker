@@ -26,13 +26,12 @@ Expense Tracker is a robust application designed to manage and analyze your expe
   - **Infrastructure/Security/**: Security utilities like `PasswordHasher` and `TokenGenerater`.
   - **Infrastructure/Migrations/**: Entity Framework migrations for database schema.
   - **Application/DTOs/**: Data Transfer Objects for API requests and responses.
-  - **Application/Services/**: Business logic layer with interfaces and implementations, including `AuthService`, `ReservationService`, and `AdminReservationService`.
+  - **Application/Services/**: Business logic layer with interfaces and implementations, including `ExpenseService`, `SubscriptionService`, and `ReceiptLlmService`.
   - **Application/Services/Auth/Tokens/**: Handles token related logic, such as `AuthToken`.
-  - **Application/Services/Reservations/Capacity/**: Manages reservation capacity logic.
   - **Application/Jobs/**: Background jobs managed by Hangfire.
-  - **Domain/Models/**: Entity models like `Reservation`, `Resource`, `User`, and `RefreshToken`.
+  - **Domain/Models/**: Entity models like `Expense`, `Subscription`, `User`, and `RefreshToken`.
   - **API/Middleware/**: Custom middleware like `ErrorHandlingMiddleware`.
-  - **API/Controllers/**: Handles API endpoints (e.g., `AuthController`, `ReservationController`, `ResourceController`).
+  - **API/Controllers/**: Handles API endpoints (e.g., `AuthController`, `ExpenseController`, `AiController`).
 
 ### Tests
 - **tests/**: Contains unit tests for the application.
@@ -74,6 +73,7 @@ Expense Tracker is a robust application designed to manage and analyze your expe
    - `ISSUER`: The issuer of the JWT (e.g., your API name).
    - `AUDIENCE`: The audience for the JWT (e.g., your client application).
    - `OPENAI_API_KEY`: A secure key to connect to OpenAI
+
 4. Apply migrations to the database:
    ```bash
    dotnet ef database update
