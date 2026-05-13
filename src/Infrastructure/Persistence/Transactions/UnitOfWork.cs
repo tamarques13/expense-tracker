@@ -15,9 +15,9 @@ namespace ExpenseTracker.Infrastructure.Persistence.Transactions
     /// that the provided action executes within a reliable transactional scope.
     /// </summary>
 
-    public class UnitOfWork(SpentirDbContext context) : IUnitOfWork
+    public class UnitOfWork(ExpenseDbContext context) : IUnitOfWork
     {
-        private readonly SpentirDbContext _context = context;
+        private readonly ExpenseDbContext _context = context;
 
         /// <summary>
         /// Executes the provided asynchronous action within a database transaction.

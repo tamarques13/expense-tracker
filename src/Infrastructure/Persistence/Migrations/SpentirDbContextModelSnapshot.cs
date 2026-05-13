@@ -10,8 +10,8 @@ using ExpenseTracker.Infrastructure.Persistence.Configurations;
 
 namespace ExpenseTracker.Migrations
 {
-    [DbContext(typeof(SpentirDbContext))]
-    partial class SpentirDbContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(ExpenseDbContext))]
+    partial class ExpenseDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {

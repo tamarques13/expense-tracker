@@ -10,9 +10,9 @@ namespace ExpenseTracker.Infrastructure.Persistence.Repositories
     /// Provides CRUD operations and paginated queries scoped to a specific user.
     /// </summary>
 
-    public class ExpenseRepository(SpentirDbContext context) : IExpenseRepository
+    public class ExpenseRepository(ExpenseDbContext context) : IExpenseRepository
     {
-        private readonly SpentirDbContext _context = context;
+        private readonly ExpenseDbContext _context = context;
 
         public async Task AddAsync(Expense expense, CancellationToken cancellationToken = default)
         {
