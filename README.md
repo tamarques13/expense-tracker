@@ -83,6 +83,16 @@ Expense Tracker is a robust application designed to manage and analyze your expe
    dotnet run
    ```
 
+## Usage
+- Use tools like Postman or Swagger to test the API endpoints.
+- Example endpoints:
+  - `POST /api/v1/auth/login`: Authenticate and retrieve a JWT.
+  - `GET /api/v1/expenses`: Fetch all expenses for a user.
+  - `POST /api/v1/expenses`: Create a new expense for a user.
+  - `GET /api/v1/subscriptions`: Fetch all subscriptions for a user.
+  - `POST /api/v1/subscriptions`: Create a new subscription for a user.
+  - `GET /api/v1/analytics`: Retrieve analytics data for expenses and subscriptions.
+
 ## Testing
 
 ### Unit Tests
@@ -92,5 +102,73 @@ Expense Tracker is a robust application designed to manage and analyze your expe
   dotnet test
   ```
 
+### Continuous Integration
+This project uses **GitHub Actions** to automatically build and test the application.
+
+The CI pipeline runs on:
+- Pull requests  
+
+The workflow performs:
+- Restore dependencies  
+- Build the project  
+- Run unit tests  
+
+## Generate Environment Secret Key (Git Bash)
+
+Copy and run the command below in Git Bash to generate a secure secret key:
+
+```
+openssl rand -base64 64
+```
+The output will be a random base64 string (64 characters).
+
 ## License
 This project is licensed under the MIT License.
+
+## Database Schema
+The database schema includes the following entities:
+
+- **Users**:
+  - Fields: `Id`, `Email`, `Password`, `FirstName`, `LastName`, `Currency`.
+  - Relationships: One-to-Many with `Expenses` and `Subscriptions`.
+- **Expenses**:
+  - Fields: `Id`, `Category`, `Amount`, `CreatedAt`, `UserId`.
+  - Relationships: Many-to-One with `Users`.
+- **Subscriptions**:
+  - Fields: `Id`, `Name`, `Category`, `Amount`, `RenewDay`, `ExpireDay`, `IsActive`, `UserId`, `LastGenerated`.
+  - Relationships: Many-to-One with `Users`.
+- **RefreshTokens**:
+  - Fields: `Id`, `UserId`, `Token`, `ExpireDate`, `CreatedAt`, `RevokedAt`, `ReplacedByToken`, `IsRevoked`, `IpAddress`.
+  - Relationships: Many-to-One with `Users`.
+
+## API Documentation (Swagger)
+Swagger is integrated into the project:
+
+- **Setup**:
+  - Swagger is configured in `Program.cs` with security definitions for JWT.
+  - Swagger UI is accessible at `/swagger` in development mode.
+- **Usage**:
+  - Provides API documentation for all endpoints.
+  - Includes JWT authentication details for secured endpoints.
+
+## Advanced Features
+
+- **Refresh Tokens**:
+  - Tokens are generated during login and stored in the database.
+  - Tokens are validated for expiration and reuse detection.
+  - Token rotation is implemented to enhance security.
+- **AI Integration**:
+  - Extracts text from receipts images in the right format to create expenses.
+- **Hangfire Jobs**:
+  - Jobs are scheduled to check for subscriptions renewal day, to create expenses in the correct day.
+
+## Contributing Guidelines
+
+- **Code Style**:
+  - Follow C# conventions and use meaningful variable names.
+- **Pull Requests**:
+  - Create a new branch for each feature or bug fix.
+  - Ensure all tests pass before submitting a pull request.
+- **Testing**:
+  - Write unit tests for new features.
+  - Run `dotnet test` to verify changes.
