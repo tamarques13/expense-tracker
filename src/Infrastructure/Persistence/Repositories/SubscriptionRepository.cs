@@ -10,9 +10,9 @@ namespace ExpenseTracker.Infrastructure.Persistence.Repositories
     /// Provides CRUD operations to a specific user.
     /// </summary>
 
-    public class SubscriptionRepository(SpentirDbContext context) : ISubscriptionRepository
+    public class SubscriptionRepository(ExpenseDbContext context) : ISubscriptionRepository
     {
-        private readonly SpentirDbContext _context = context;
+        private readonly ExpenseDbContext _context = context;
 
         public async Task AddAsync(Subscription subscription)
         {

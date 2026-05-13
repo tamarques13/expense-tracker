@@ -6,9 +6,9 @@ using ExpenseTracker.Infrastructure.Persistence.Configurations;
 namespace ExpenseTracker.Infrastructure.Persistence.Repositories
 {
 
-    public class RefreshTokenRepository(SpentirDbContext context) : IRefreshTokenRepository
+    public class RefreshTokenRepository(ExpenseDbContext context) : IRefreshTokenRepository
     {
-        private readonly SpentirDbContext _context = context;
+        private readonly ExpenseDbContext _context = context;
 
 
         public async Task AddAsync(RefreshToken token)

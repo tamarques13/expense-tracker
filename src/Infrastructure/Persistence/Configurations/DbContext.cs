@@ -14,7 +14,7 @@ namespace ExpenseTracker.Infrastructure.Persistence.Configurations
     /// It represents the persistence boundary for all financial and subscription data.
     /// </summary>
 
-    public class SpentirDbContext(DbContextOptions<SpentirDbContext> options) : DbContext(options)
+    public class ExpenseDbContext(DbContextOptions<ExpenseDbContext> options) : DbContext(options)
     {
         public DbSet<Expense> Expenses { get; set; }
         public DbSet<User> Users { get; set; }

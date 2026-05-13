@@ -9,9 +9,9 @@ namespace ExpenseTracker.Infrastructure.Persistence.Repositories
     /// Repository responsible for managing <see cref="User"/> persistence.
     /// </summary>
     /// 
-    public class AuthRepository(SpentirDbContext context) : IAuthRepository
+    public class AuthRepository(ExpenseDbContext context) : IAuthRepository
     {
-        private readonly SpentirDbContext _context = context;
+        private readonly ExpenseDbContext _context = context;
 
         public async Task AddAsync(User user)
         {

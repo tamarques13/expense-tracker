@@ -11,7 +11,7 @@ using ExpenseTracker.Infrastructure.Persistence.Configurations;
 
 namespace ExpenseTracker.Migrations
 {
-    [DbContext(typeof(SpentirDbContext))]
+    [DbContext(typeof(ExpenseDbContext))]
     [Migration("20260314222815_InitialCreate")]
     partial class InitialCreate
     {

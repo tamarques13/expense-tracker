@@ -3,16 +3,16 @@ using Microsoft.EntityFrameworkCore.Design;
 
 namespace ExpenseTracker.Infrastructure.Persistence.Configurations
 {
-    public class SpentirDbContextFactory : IDesignTimeDbContextFactory<SpentirDbContext>
+    public class ExpenseDbContextFactory : IDesignTimeDbContextFactory<ExpenseDbContext>
     {
-        public SpentirDbContext CreateDbContext(string[] args)
+        public ExpenseDbContext CreateDbContext(string[] args)
         {
             var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING") ?? throw new InvalidOperationException("DB_CONNECTION_STRING environment variable is not set.");
-            var optionsBuilder = new DbContextOptionsBuilder<SpentirDbContext>();
+            var optionsBuilder = new DbContextOptionsBuilder<ExpenseDbContext>();
 
             optionsBuilder.UseNpgsql(connectionString);
 
-            return new SpentirDbContext(optionsBuilder.Options);
+            return new ExpenseDbContext(optionsBuilder.Options);
         }
     }
 }

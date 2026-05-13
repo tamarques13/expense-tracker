@@ -41,7 +41,7 @@ var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING"
 var secretKey = Environment.GetEnvironmentVariable("SECRET_KEY") ?? throw new InvalidOperationException("SECRET_KEY environment variable is not set.");
 var openAIKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY") ?? throw new InvalidOperationException("AI_KEY environment variable is not set.");
 
-builder.Services.AddDbContext<SpentirDbContext>(options => options.UseNpgsql(connectionString));
+builder.Services.AddDbContext<ExpenseDbContext>(options => options.UseNpgsql(connectionString));
 builder.Services.AddControllers();
 
 // Development-only CORS policy.
