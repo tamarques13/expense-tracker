@@ -33,7 +33,7 @@ using ExpenseTracker.Domain.Services;
 
 using ExpenseTracker.API.Middleware;
 
-Env.Load();
+Env.Load("../.env");
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -148,6 +148,12 @@ builder.Services.AddVersionedApiExplorer(options =>
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<ExpenseDbContext>();
+    db.Database.Migrate();
+}
+
 app.UseHangfireDashboard("/dashboard");
 
 using (var scope = app.Services.CreateScope())
@@ -168,7 +174,12 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
-app.UseHttpsRedirection();
+
+if (app.Environment.IsDevelopment() == false && Environment.GetEnvironmentVariable("ASPNETCORE_URLS")?.Contains("https") == true)
+{
+    app.UseHttpsRedirection();
+}
+
 app.UseCors("AllowAll");
 app.UseAuthentication();
 app.UseAuthorization();
