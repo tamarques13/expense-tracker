@@ -7,6 +7,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{05F9A1D0
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "tests\UnitTests\UnitTests.csproj", "{BD31F192-47A7-4B6E-B497-C60FA27457C6}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{2C7BD526-84ED-42FD-9B67-663AE25A989B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpenseTracker", "src\backend\ExpenseTracker.csproj", "{E6F6D93D-7553-4DAB-B41F-286FC15F459D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,11 +21,16 @@ Global
 		{BD31F192-47A7-4B6E-B497-C60FA27457C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BD31F192-47A7-4B6E-B497-C60FA27457C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BD31F192-47A7-4B6E-B497-C60FA27457C6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E6F6D93D-7553-4DAB-B41F-286FC15F459D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E6F6D93D-7553-4DAB-B41F-286FC15F459D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E6F6D93D-7553-4DAB-B41F-286FC15F459D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E6F6D93D-7553-4DAB-B41F-286FC15F459D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{BD31F192-47A7-4B6E-B497-C60FA27457C6} = {05F9A1D0-5FD4-48AD-8EE1-EE380CF7C397}
+		{E6F6D93D-7553-4DAB-B41F-286FC15F459D} = {2C7BD526-84ED-42FD-9B67-663AE25A989B}
 	EndGlobalSection
 EndGlobal

@@ -48,7 +48,17 @@ builder.Services.AddControllers();
 // WARNING: Allowing any origin, method and header is not safe for production.
 // Review and restrict origins before deploying.
 
-builder.Services.AddCors(options => options.AddPolicy("AllowAll", builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()));
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("frontend",
+        policy =>
+        {
+            policy
+                .WithOrigins("http://localhost:5173")
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        });
+});
 
 builder.Services.AddScoped<IExpenseRepository, ExpenseRepository>();
 builder.Services.AddScoped<IExpenseService, ExpenseService>();
@@ -180,7 +190,7 @@ if (app.Environment.IsDevelopment() == false && Environment.GetEnvironmentVariab
     app.UseHttpsRedirection();
 }
 
-app.UseCors("AllowAll");
+app.UseCors("frontend");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
