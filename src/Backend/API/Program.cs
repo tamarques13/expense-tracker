@@ -33,7 +33,7 @@ using ExpenseTracker.Domain.Services;
 
 using ExpenseTracker.API.Middleware;
 
-Env.Load("../.env");
+Env.Load("../../.env");
 
 var builder = WebApplication.CreateBuilder(args);
 
