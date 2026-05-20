@@ -1,0 +1,13 @@
+[data-theme="dark"] {
+  --color-bg:           #0c0c0b;
+  --color-surface:      #161614;
+  --color-surface-2:    #1c1c1a;
+
+  --color-text:         #f2f1ee;
+  --color-text-muted:   #8c8984;
+
+  --color-border:       #282826;
+
+  --color-primary:      #f2f1ee;
+  --color-primary-fg:   #111110;
+}

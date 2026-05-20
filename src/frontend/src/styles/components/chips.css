@@ -1,0 +1,22 @@
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2px 7px;
+  border-radius: var(--radius-pill);
+}
+
+.chip--up {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.chip--down {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+[data-theme="dark"] .chip--up   { background: #14532d; color: #86efac; }
+[data-theme="dark"] .chip--down { background: #450a0a; color: #fca5a5; }
