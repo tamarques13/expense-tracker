@@ -54,7 +54,7 @@ function RowActions({ expense, onEdit, onDelete }: {
       )}
       {onDelete && (
         <button
-          className="action-btn action-btn--danger"
+          className="action-btn"
           onClick={() => onDelete(expense.id)}
         >
           <svg width="14" height="14" viewBox="0 0 14 14">
