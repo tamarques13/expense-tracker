@@ -1,9 +1,4 @@
-export interface Expense {
-  id: string;
-  category: string;
-  date: string;       // ISO date string e.g. "2026-04-28"
-  amount: number;     // always positive; displayed as negative outflow
-}
+import type { Expense } from '../types'
 
 interface ExpenseTableProps {
   expenses: Expense[];
@@ -106,7 +101,7 @@ export function ExpenseTable({ expenses, onEdit, onDelete }: ExpenseTableProps) 
                   </span>
                 </td>
 
-                <td>{formatDate(expense.date)}</td>
+                <td>{formatDate(expense.createdAt)}</td>
 
                 <td className="row-amount row-amount--negative">
                   {formatAmount(expense.amount)}

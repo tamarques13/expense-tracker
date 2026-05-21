@@ -23,7 +23,7 @@ export function TopBar({ theme, toggle }: TopBarProps) {
           <path d="M3 1h12v16l-2-1.5-2 1.5-2-1.5-2 1.5-2-1.5V1z" />
           <path d="M6 6h6M6 9h6M6 12h4" />
         </svg>
-        Spendly
+        Expense Tracker
       </a>
 
       <div className="topbar__right">

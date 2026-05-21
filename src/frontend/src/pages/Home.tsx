@@ -1,137 +1,59 @@
 import { useState } from "react";
+
 import { TopBar } from "../components/TopBar";
 import { Modal } from "../components/Modal";
+import { Pagination } from "../components/Pagination";
+
+import { SectionToolbar } from "../components/home/SectionToolbar";
+
+import { MetricCard } from "../features/analytics/components/MetricCard";
 import { ExpenseTable } from "../features/expenses/components/ExpenseTable";
 import { ExpenseForm } from "../features/expenses/components/ExpenseForm";
-import { Pagination } from "../components/Pagination";
-import { useExpenses } from "../features/expenses/hooks";
+
+import { useAnalytics } from "../features/analytics/hooks";
 import { useTheme } from "../hooks/useTheme";
+import { useExpenseActions } from "../features/expenses/useExpenseActions";
+
 import type { Expense } from "../features/expenses/types";
-import type { ExpenseFormData } from "../features/expenses/components/ExpenseForm";
 
-// ─────────────────────────────────────────────────────────────
-// Metric Card
-// ─────────────────────────────────────────────────────────────
-
-interface MetricCardProps {
-  label: string;
-  value: string;
-  sub?: React.ReactNode;
-}
-
-function MetricCard({ label, value, sub }: MetricCardProps) {
-  return (
-    <div className="metric-card">
-      <p className="metric-card__label">{label}</p>
-      <p className="metric-card__value">{value}</p>
-      {sub && <div className="metric-card__sub">{sub}</div>}
-    </div>
-  );
-}
-
-// ─────────────────────────────────────────────────────────────
-// Section Toolbar
-// ─────────────────────────────────────────────────────────────
-
-function SectionToolbar({ count, onAdd }: { count: number; onAdd: () => void }) {
-  return (
-    <div className="section-toolbar">
-      <div className="section-toolbar__left">
-        <span className="section-title">Recent</span>
-        <span className="count-badge">{count} items</span>
-      </div>
-
-      <button className="btn btn--primary" onClick={onAdd}>
-        <svg
-          width="14"
-          height="14"
-          viewBox="0 0 14 14"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          aria-hidden="true"
-        >
-          <path d="M7 1v12M1 7h12" />
-        </svg>
-        Add expense
-      </button>
-    </div>
-  );
-}
-
-// ─────────────────────────────────────────────────────────────
-// Summary metrics hook
-// ─────────────────────────────────────────────────────────────
-
-function useSummaryMetrics(expenses: { amount: number }[]) {
-  const totalSpent = expenses.reduce((sum, e) => sum + e.amount, 0);
-  const largest = expenses.length
-    ? Math.max(...expenses.map((e) => e.amount))
-    : 0;
-
-  const monthLabel = new Date().toLocaleDateString("en-GB", {
-    month: "long",
-    year: "numeric",
-  });
-
-  return { totalSpent, largest, monthLabel };
-}
-
-// ─────────────────────────────────────────────────────────────
-// Home Page
-// ─────────────────────────────────────────────────────────────
+/**
+ * Home dashboard page.
+ * Shows monthly analytics and expense metrics.
+ * Displays expenses table with pagination.
+ * Supports adding and editing expenses via modals.
+ * Uses theme, analytics and expense action hooks.
+ */
 
 export default function Home() {
-  const { theme, toggle } = useTheme();
+  const currentDate = new Date();
 
+  const today = currentDate.toISOString().split("T")[0];
+  const monthLabel = currentDate.toLocaleDateString("en-GB", { month: "long", year: "numeric" });
+
+
+  const { theme, toggle } = useTheme();  
   const [page, setPage] = useState(1);
+  const [date] = useState(today);
   const [addOpen, setAddOpen] = useState(false);
   const [editing, setEditing] = useState<Expense | null>(null);
 
-  const { expenses, pagination, loading, error, add, edit, remove } = useExpenses(page);
+  const { expenses, pagination, loading, error, handleAdd, handleEdit, handleDelete } = useExpenseActions({
+    page,
+    onAddSuccess: () => setAddOpen(false),
+    onEditSuccess: () => setEditing(null),
+  });
 
-  const { totalSpent, largest, monthLabel } = useSummaryMetrics(expenses);
+  const { analytics } = useAnalytics(date);
 
+
+  // Analytics
+  const totalSpent = analytics?.amounts.total ?? 0;
+  const lgSpent = analytics?.amounts.largest ?? 0;
+
+  // Pagination
   const totalItems = pagination?.totalCount ?? expenses.length;
   const totalPages = pagination?.totalPages ?? 1;
   const pageSize = pagination?.pageSize ?? 10;
-
-  // ── Handlers ──────────────────────────────────────────────
-
-  async function handleAdd(data: ExpenseFormData) {
-    try {
-      await add({ category: data.category, amount: parseFloat(data.amount), createdAt: data.createdAt });
-      setAddOpen(false);
-    } catch {
-      // Show Toast
-    }
-  }
-
-  async function handleEdit(data: ExpenseFormData) {
-    if (!editing) return;
-    try {
-      await edit(editing.id, { category: data.category, amount: parseFloat(data.amount), createdAt: data.createdAt });
-      setEditing(null);
-    } catch {
-      // Show Toast
-    }
-  }
-
-  async function handleDelete(id: string) {
-    if (!window.confirm("Delete this expense?")) return;
-    try {
-      await remove(id);
-    } catch {
-      // Show Toast
-    }
-  }
-
-  function handleExpenseEdit(expense: Omit<Expense, "createdAt"> & { date: string }) {
-    setEditing({ ...expense, createdAt: expense.date });
-  }
-
-  // ── Render ────────────────────────────────────────────────
 
   return (
     <div className="app-shell" data-theme={theme}>
@@ -162,7 +84,7 @@ export default function Home() {
           />
           <MetricCard
             label="Largest"
-            value={`€${largest.toFixed(2)}`}
+            value={`€${lgSpent.toFixed(2)}`}
             sub="Single expense"
           />
         </div>
@@ -187,7 +109,7 @@ export default function Home() {
                 createdAt: editing.createdAt,
                 amount: String(editing.amount),
               }}
-              onSubmit={handleEdit}
+              onSubmit={(values) => handleEdit(editing, values)}
               onCancel={() => setEditing(null)}
             />
           )}
@@ -214,7 +136,7 @@ export default function Home() {
                 ...expense,
                 date: expense.createdAt,
               }))}
-              onEdit={handleExpenseEdit}
+              onEdit={(expense) => setEditing(expense)}
               onDelete={handleDelete}
             />
 

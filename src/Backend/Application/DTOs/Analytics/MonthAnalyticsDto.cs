@@ -40,5 +40,4 @@ namespace ExpenseTracker.Application.DTOs.Analytics
         public decimal? PreviousMonthTotal { get; set; }
         public decimal? LastMonthChange { get; set; }
     }
-
 }

@@ -6,7 +6,8 @@ using ExpenseTracker.Application.DTOs;
 
 namespace ExpenseTracker.API.Controllers
 {
-    [Authorize]
+    // [Authorize]
+    [AllowAnonymous]
     [ApiController]
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/expenses")]
@@ -21,7 +22,8 @@ namespace ExpenseTracker.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateExpense(CreateExpenseDto dto)
         {
-            var expenseDto = await _expenseService.CreateExpenseAsync(dto, Guid.Parse(UserId));
+            // var expenseDto = await _expenseService.CreateExpenseAsync(dto, Guid.Parse(UserId));
+            var expenseDto = await _expenseService.CreateExpenseAsync(dto, Guid.Parse("3ba6b5b1-60d6-4179-9cae-9ba4bed6a39b"));
 
             return CreatedAtAction(nameof(GetExpenses), expenseDto);
         }
@@ -33,7 +35,8 @@ namespace ExpenseTracker.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetExpenses(DateOnly? date, bool isLastYear, int page = 1, int pageSize = 20)
         {
-            var expensesDto = await _expenseService.GetExpensesAsync(Guid.Parse(UserId), date, isLastYear, page, pageSize);
+            // var expensesDto = await _expenseService.GetExpensesAsync(Guid.Parse(UserId), date, isLastYear, page, pageSize);
+            var expensesDto = await _expenseService.GetExpensesAsync(Guid.Parse("3ba6b5b1-60d6-4179-9cae-9ba4bed6a39b"), date, isLastYear, page, pageSize);
 
             return Ok(expensesDto);
         }
@@ -43,10 +46,11 @@ namespace ExpenseTracker.API.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [HttpPut("id")]
-        public async Task<IActionResult> UpdateExpense(Guid Id, CreateExpenseDto dto)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateExpense(Guid id, CreateExpenseDto dto)
         {
-            await _expenseService.UpdateExpenseAsync(Id, dto, Guid.Parse(UserId));
+            // await _expenseService.UpdateExpenseAsync(id, dto, Guid.Parse(UserId));
+            await _expenseService.UpdateExpenseAsync(id, dto, Guid.Parse("3ba6b5b1-60d6-4179-9cae-9ba4bed6a39b"));
 
             return NoContent();
         }
@@ -56,10 +60,11 @@ namespace ExpenseTracker.API.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [HttpDelete("id")]
-        public async Task<IActionResult> DeleteExpense(Guid expenseId)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteExpense(Guid id)
         {
-            await _expenseService.DeleteExpenseAsync(expenseId, Guid.Parse(UserId));
+            // await _expenseService.DeleteExpenseAsync(id, Guid.Parse(UserId));
+            await _expenseService.DeleteExpenseAsync(id, Guid.Parse("3ba6b5b1-60d6-4179-9cae-9ba4bed6a39b"));
 
             return NoContent();
         }

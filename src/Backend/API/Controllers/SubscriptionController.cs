@@ -43,10 +43,10 @@ namespace ExpenseTracker.API.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [HttpGet("id")]
-        public async Task<IActionResult> GetSubscriptions(Guid Id)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetSubscriptions(Guid id)
         {
-            var subscriptionDto = await _subscriptionService.GetSubscriptionByIdAsync(Id, Guid.Parse(UserId));
+            var subscriptionDto = await _subscriptionService.GetSubscriptionByIdAsync(id, Guid.Parse(UserId));
 
             return Ok(subscriptionDto);
         }
@@ -56,10 +56,10 @@ namespace ExpenseTracker.API.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [HttpPut("id")]
-        public async Task<IActionResult> UpdateSubscription(Guid Id, CreateSubscriptionDto dto)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateSubscription(Guid id, CreateSubscriptionDto dto)
         {
-            await _subscriptionService.UpdateSubscriptionAsync(Id, dto, Guid.Parse(UserId));
+            await _subscriptionService.UpdateSubscriptionAsync(id, dto, Guid.Parse(UserId));
 
             return NoContent();
         }
@@ -69,10 +69,10 @@ namespace ExpenseTracker.API.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [HttpPatch("id/status")]
-        public async Task<IActionResult> UpdateSubscriptionState(Guid Id)
+        [HttpPatch("{id}/status")]
+        public async Task<IActionResult> UpdateSubscriptionState(Guid id)
         {
-            await _subscriptionService.UpdateSubscriptionStateAsync(Id, Guid.Parse(UserId));
+            await _subscriptionService.UpdateSubscriptionStateAsync(id, Guid.Parse(UserId));
 
             return NoContent();
         }
@@ -82,10 +82,10 @@ namespace ExpenseTracker.API.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [HttpDelete("id")]
-        public async Task<IActionResult> DeleteSubscription(Guid subscriptionId)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteSubscription(Guid id)
         {
-            await _subscriptionService.DeleteSubscriptionAsync(subscriptionId, Guid.Parse(UserId));
+            await _subscriptionService.DeleteSubscriptionAsync(id, Guid.Parse(UserId));
 
             return NoContent();
         }
