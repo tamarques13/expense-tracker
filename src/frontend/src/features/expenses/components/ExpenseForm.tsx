@@ -1,10 +1,8 @@
 import { useState as useFormState } from "react";
 
 export interface ExpenseFormData {
-  description: string;
-  note: string;
   category: string;
-  date: string;
+  createdAt: string;
   amount: string;
 }
 
@@ -30,10 +28,8 @@ export function ExpenseForm({ initialData, onSubmit, onCancel }: ExpenseFormProp
   const today = new Date().toISOString().split("T")[0];
 
   const [form, setForm] = useFormState<ExpenseFormData>({
-    description: initialData?.description ?? "",
-    note: initialData?.note ?? "",
     category: initialData?.category ?? "",
-    date: initialData?.date ?? today,
+    createdAt: initialData?.createdAt ?? today,
     amount: initialData?.amount ?? "",
   });
 
@@ -47,9 +43,8 @@ export function ExpenseForm({ initialData, onSubmit, onCancel }: ExpenseFormProp
   const validate = () => {
     const next: Partial<ExpenseFormData> = {};
 
-    if (!form.description.trim()) next.description = "Required";
     if (!form.category) next.category = "Required";
-    if (!form.date) next.date = "Required";
+    if (!form.createdAt) next.createdAt = "Required";
 
     const amount = Number(form.amount);
     if (!amount || amount <= 0) next.amount = "Enter a valid amount";
@@ -58,9 +53,7 @@ export function ExpenseForm({ initialData, onSubmit, onCancel }: ExpenseFormProp
     return Object.keys(next).length === 0;
   };
 
-  const handleSubmit = () => {
-    if (validate()) onSubmit(form);
-  };
+  const handleSubmit = () => { if (validate()) onSubmit(form); };
 
   return (
     <>
@@ -90,7 +83,7 @@ export function ExpenseForm({ initialData, onSubmit, onCancel }: ExpenseFormProp
             onChange={(e) => update("category", e.target.value)}
           >
             <option value="" disabled>Select a category</option>
-            {CATEGORIES.map((c) => (<option key={c} value={c}>{c}</option>))}
+            {CATEGORIES.map((c) => (<option className="form-option" key={c} value={c}>{c}</option>))}
           </select>
         </FormGroup>
 

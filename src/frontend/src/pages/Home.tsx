@@ -6,6 +6,8 @@ import { ExpenseForm } from "../features/expenses/components/ExpenseForm";
 import { Pagination } from "../components/Pagination";
 import { useExpenses } from "../features/expenses/hooks";
 import { useTheme } from "../hooks/useTheme";
+import type { Expense } from "../features/expenses/types";
+import type { ExpenseFormData } from "../features/expenses/components/ExpenseForm";
 
 // ─────────────────────────────────────────────────────────────
 // Metric Card
@@ -31,10 +33,7 @@ function MetricCard({ label, value, sub }: MetricCardProps) {
 // Section Toolbar
 // ─────────────────────────────────────────────────────────────
 
-function SectionToolbar({ count, onAdd, }: {
-  count: number;
-  onAdd: () => void;
-}) {
+function SectionToolbar({ count, onAdd }: { count: number; onAdd: () => void }) {
   return (
     <div className="section-toolbar">
       <div className="section-toolbar__left">
@@ -62,7 +61,7 @@ function SectionToolbar({ count, onAdd, }: {
 }
 
 // ─────────────────────────────────────────────────────────────
-// Derived summary metrics (extracted for clarity)
+// Summary metrics hook
 // ─────────────────────────────────────────────────────────────
 
 function useSummaryMetrics(expenses: { amount: number }[]) {
@@ -71,8 +70,7 @@ function useSummaryMetrics(expenses: { amount: number }[]) {
     ? Math.max(...expenses.map((e) => e.amount))
     : 0;
 
-  const now = new Date();
-  const monthLabel = now.toLocaleDateString("en-GB", {
+  const monthLabel = new Date().toLocaleDateString("en-GB", {
     month: "long",
     year: "numeric",
   });
@@ -86,16 +84,54 @@ function useSummaryMetrics(expenses: { amount: number }[]) {
 
 export default function Home() {
   const { theme, toggle } = useTheme();
-  const { expenses, pagination, loading, error } = useExpenses();
 
-  const [open, setOpen] = useState(false);
   const [page, setPage] = useState(1);
+  const [addOpen, setAddOpen] = useState(false);
+  const [editing, setEditing] = useState<Expense | null>(null);
+
+  const { expenses, pagination, loading, error, add, edit, remove } = useExpenses(page);
 
   const { totalSpent, largest, monthLabel } = useSummaryMetrics(expenses);
 
   const totalItems = pagination?.totalCount ?? expenses.length;
   const totalPages = pagination?.totalPages ?? 1;
   const pageSize = pagination?.pageSize ?? 10;
+
+  // ── Handlers ──────────────────────────────────────────────
+
+  async function handleAdd(data: ExpenseFormData) {
+    try {
+      await add({ category: data.category, amount: parseFloat(data.amount), createdAt: data.createdAt });
+      setAddOpen(false);
+    } catch {
+      // Show Toast
+    }
+  }
+
+  async function handleEdit(data: ExpenseFormData) {
+    if (!editing) return;
+    try {
+      await edit(editing.id, { category: data.category, amount: parseFloat(data.amount), createdAt: data.createdAt });
+      setEditing(null);
+    } catch {
+      // Show Toast
+    }
+  }
+
+  async function handleDelete(id: string) {
+    if (!window.confirm("Delete this expense?")) return;
+    try {
+      await remove(id);
+    } catch {
+      // Show Toast
+    }
+  }
+
+  function handleExpenseEdit(expense: Omit<Expense, "createdAt"> & { date: string }) {
+    setEditing({ ...expense, createdAt: expense.date });
+  }
+
+  // ── Render ────────────────────────────────────────────────
 
   return (
     <div className="app-shell" data-theme={theme}>
@@ -119,36 +155,79 @@ export default function Home() {
             })}`}
             sub="This month"
           />
-
-          <MetricCard label="Transactions" value={String(totalItems)} sub="This month" />
-          <MetricCard label="Largest" value={`€${largest.toFixed(2)}`} sub="Single expense" />
+          <MetricCard
+            label="Transactions"
+            value={String(totalItems)}
+            sub="This month"
+          />
+          <MetricCard
+            label="Largest"
+            value={`€${largest.toFixed(2)}`}
+            sub="Single expense"
+          />
         </div>
 
         {/* Toolbar */}
-        <SectionToolbar count={totalItems} onAdd={() => setOpen(true)} />
+        <SectionToolbar count={totalItems} onAdd={() => setAddOpen(true)} />
 
-        {/* Modal */}
-        <Modal open={open} onClose={() => setOpen(false)}>
+        {/* Add modal */}
+        <Modal open={addOpen} onClose={() => setAddOpen(false)}>
           <ExpenseForm
-            onSubmit={(data) => {
-              console.log(data);
-              setOpen(false);
-            }}
-            onCancel={() => setOpen(false)}
+            onSubmit={handleAdd}
+            onCancel={() => setAddOpen(false)}
           />
         </Modal>
 
-        {/* States */}
-        {loading && (<div className="state"> <div className="spinner" aria-label="Loading" /><p>Loading expenses…</p></div>)}
+        {/* Edit modal */}
+        <Modal open={!!editing} onClose={() => setEditing(null)}>
+          {editing && (
+            <ExpenseForm
+              initialData={{
+                category: editing.category,
+                createdAt: editing.createdAt,
+                amount: String(editing.amount),
+              }}
+              onSubmit={handleEdit}
+              onCancel={() => setEditing(null)}
+            />
+          )}
+        </Modal>
 
-        {error && !loading && (<p className="error-text" role="alert">{error}</p>)}
+        {/* Loading */}
+        {loading && (
+          <div className="state">
+            <div className="spinner" aria-label="Loading" />
+            <p>Loading expenses…</p>
+          </div>
+        )}
+
+        {/* Error */}
+        {error && !loading && (
+          <p className="error-text" role="alert">{error}</p>
+        )}
 
         {/* Table + Pagination */}
         {!loading && !error && (
-          <><ExpenseTable expenses={expenses.map((e) => ({ ...e, category: e.category || "", date: e.date || new Date().toISOString() }))} />
+          <>
+            <ExpenseTable
+              expenses={expenses.map((expense) => ({
+                ...expense,
+                date: expense.createdAt,
+              }))}
+              onEdit={handleExpenseEdit}
+              onDelete={handleDelete}
+            />
 
-            <Pagination page={page} totalPages={totalPages} totalItems={totalItems} pageSize={pageSize} onPageChange={setPage} /></>
+            <Pagination
+              page={page}
+              totalPages={totalPages}
+              totalItems={totalItems}
+              pageSize={pageSize}
+              onPageChange={setPage}
+            />
+          </>
         )}
+
       </div>
     </div>
   );

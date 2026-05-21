@@ -1,15 +1,30 @@
-export type Expense = {
-  date: string;
+// ─────────────────────────────────────────────────────────────
+// Core entity
+// ─────────────────────────────────────────────────────────────
+ 
+export interface Expense {
   id: string;
   category: string;
   amount: number;
   createdAt: string;
-};
-
-export type PaginatedExpensesResponse = {
+}
+ 
+// ─────────────────────────────────────────────────────────────
+// API DTOs
+// ─────────────────────────────────────────────────────────────
+ 
+export type CreateExpenseDto = Omit<Expense, "id">;
+ 
+export type UpdateExpenseDto = Partial<Omit<Expense, "id">>;
+ 
+// ─────────────────────────────────────────────────────────────
+// Paginated response
+// ─────────────────────────────────────────────────────────────
+ 
+export interface PaginatedExpensesResponse {
   items: Expense[];
-  pageNumber: number;
-  pageSize: number;
   totalCount: number;
   totalPages: number;
-};
+  pageSize: number;
+  currentPage: number;
+}

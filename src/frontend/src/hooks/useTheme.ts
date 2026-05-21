@@ -7,9 +7,5 @@ export function useTheme() {
         document.documentElement.setAttribute("data-theme", theme);
     }, [theme]);
 
-    return {
-        theme,
-        toggle: () =>
-            setTheme((t) => (t === "light" ? "dark" : "light")),
-    };
+    return { theme, toggle: () => setTheme((t) => (t === "light" ? "dark" : "light")) };
 }
