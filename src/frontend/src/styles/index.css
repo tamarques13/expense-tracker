@@ -17,6 +17,7 @@
 @import "./components/states.css";
 @import "./components/pagination.css";
 @import "./components/modal.css";
+@import "./components/toast.css";
 
 @import "./forms/form.css";
 @import "./forms/inputs.css";

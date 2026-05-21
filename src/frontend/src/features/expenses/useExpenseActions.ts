@@ -6,9 +6,10 @@ interface UseExpenseActionsProps {
     page: number;
     onAddSuccess: () => void;
     onEditSuccess: () => void;
+    showToast: (message: string, type?: "success" | "error") => void;
 }
 
-export function useExpenseActions({ page, onAddSuccess, onEditSuccess }: UseExpenseActionsProps) {
+export function useExpenseActions({ page, onAddSuccess, onEditSuccess, showToast }: UseExpenseActionsProps) {
     const { expenses, pagination, loading, error, add, edit, remove } = useExpenses(page);
 
     async function handleAdd(data: ExpenseFormData) {
@@ -19,8 +20,9 @@ export function useExpenseActions({ page, onAddSuccess, onEditSuccess }: UseExpe
                 createdAt: data.createdAt,
             });
             onAddSuccess();
+            showToast("Expense Created");
         } catch {
-            // TODO: toast
+            showToast("Failed to add expense", "error");
         }
     }
 
@@ -33,8 +35,9 @@ export function useExpenseActions({ page, onAddSuccess, onEditSuccess }: UseExpe
                 createdAt: data.createdAt,
             });
             onEditSuccess();
+            showToast("Expense updated");
         } catch {
-            // TODO: toast
+            showToast("Failed to update expense", "error");
         }
     }
 
@@ -42,8 +45,9 @@ export function useExpenseActions({ page, onAddSuccess, onEditSuccess }: UseExpe
         if (!window.confirm("Delete this expense?")) return;
         try {
             await remove(id);
+            showToast("Expense Deleted");
         } catch {
-            // TODO: toast
+            showToast("Failed to delete expense", "error");
         }
     }
 

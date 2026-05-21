@@ -1,8 +1,9 @@
 import { useState } from "react";
 
-import { TopBar } from "../components/TopBar";
+import { TopBar } from "../components/core/TopBar";
 import { Modal } from "../components/Modal";
 import { Pagination } from "../components/Pagination";
+import { Toast } from "../components/core/Toast";
 
 import { SectionToolbar } from "../components/home/SectionToolbar";
 
@@ -13,6 +14,7 @@ import { ExpenseForm } from "../features/expenses/components/ExpenseForm";
 import { useAnalytics } from "../features/analytics/hooks";
 import { useTheme } from "../hooks/useTheme";
 import { useExpenseActions } from "../features/expenses/useExpenseActions";
+import { useToast } from "../hooks/useToast";
 
 import type { Expense } from "../features/expenses/types";
 
@@ -30,17 +32,19 @@ export default function Home() {
   const today = currentDate.toISOString().split("T")[0];
   const monthLabel = currentDate.toLocaleDateString("en-GB", { month: "long", year: "numeric" });
 
-
-  const { theme, toggle } = useTheme();  
+  const { theme, toggle } = useTheme();
   const [page, setPage] = useState(1);
   const [date] = useState(today);
   const [addOpen, setAddOpen] = useState(false);
   const [editing, setEditing] = useState<Expense | null>(null);
 
+  const { toast, showToast, dismiss } = useToast();
+
   const { expenses, pagination, loading, error, handleAdd, handleEdit, handleDelete } = useExpenseActions({
     page,
     onAddSuccess: () => setAddOpen(false),
     onEditSuccess: () => setEditing(null),
+    showToast,
   });
 
   const { analytics } = useAnalytics(date);
@@ -148,6 +152,16 @@ export default function Home() {
               onPageChange={setPage}
             />
           </>
+        )}
+
+        {/* Toast */}
+        {toast && (
+          <Toast
+            key={toast.id}
+            message={toast.message}
+            type={toast.type}
+            onDone={dismiss}
+          />
         )}
 
       </div>
