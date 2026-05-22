@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 
 import { TopBar } from "../components/core/TopBar";
-import { Modal } from "../components/Modal";
-import { Pagination } from "../components/Pagination";
+import { Modal } from "../components/core/Modal";
+import { Pagination } from "../components/core/Pagination";
 import { Toast } from "../components/core/Toast";
-
 import { SectionToolbar } from "../components/home/SectionToolbar";
+import { Header } from "../components/home/PageHeader";
 
 import { MetricCard } from "../features/analytics/components/MetricCard";
 import { ExpenseTable } from "../features/expenses/components/ExpenseTable";
@@ -26,20 +26,19 @@ import type { Expense } from "../features/expenses/types";
  * Uses theme, analytics and expense action hooks.
  */
 
-export default function Home() {
-  const currentDate = new Date();
+const currentDate = new Date();
+const today = currentDate.toISOString().split("T")[0];
+const monthLabel = currentDate.toLocaleDateString("en-GB", { month: "long", year: "numeric" });
 
-  const today = currentDate.toISOString().split("T")[0];
-  const monthLabel = currentDate.toLocaleDateString("en-GB", { month: "long", year: "numeric" });
+export default function Home() {
 
   const { theme, toggle } = useTheme();
   const [page, setPage] = useState(1);
-  const [date] = useState(today);
   const [addOpen, setAddOpen] = useState(false);
   const [editing, setEditing] = useState<Expense | null>(null);
 
   const { toast, showToast, dismiss } = useToast();
-
+  const { analytics } = useAnalytics(today);
   const { expenses, pagination, loading, error, handleAdd, handleEdit, handleDelete } = useExpenseActions({
     page,
     onAddSuccess: () => setAddOpen(false),
@@ -47,38 +46,24 @@ export default function Home() {
     showToast,
   });
 
-  const { analytics } = useAnalytics(date);
-
-
-  // Analytics
-  const totalSpent = analytics?.amounts.total ?? 0;
-  const lgSpent = analytics?.amounts.largest ?? 0;
-
-  // Pagination
+  const totalMonthSpend = analytics?.amounts.total ?? 0;
+  const bgMonthSpend = analytics?.amounts.largest ?? 0;
   const totalItems = pagination?.totalCount ?? expenses.length;
   const totalPages = pagination?.totalPages ?? 1;
   const pageSize = pagination?.pageSize ?? 10;
+  const tableExpenses = useMemo(() => expenses.map((e) => ({ ...e, date: e.createdAt })), [expenses]);
 
   return (
     <div className="app-shell" data-theme={theme}>
       <TopBar theme={theme} toggle={toggle} />
 
       <div className="container">
+        <Header monthLabel={monthLabel} />
 
-        {/* Page header */}
-        <div className="page-header">
-          <p className="page-eyebrow">{monthLabel}</p>
-          <h1 className="page-title">Expenses</h1>
-        </div>
-
-        {/* Metrics */}
         <div className="metrics-grid">
           <MetricCard
             label="Total spent"
-            value={`€${totalSpent.toLocaleString("en-IE", {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            })}`}
+            value={`€${totalMonthSpend.toLocaleString("en-IE", { minimumFractionDigits: 2, maximumFractionDigits: 2, })}`}
             sub="This month"
           />
           <MetricCard
@@ -88,23 +73,17 @@ export default function Home() {
           />
           <MetricCard
             label="Largest"
-            value={`€${lgSpent.toFixed(2)}`}
+            value={`€${bgMonthSpend.toFixed(2)}`}
             sub="Single expense"
           />
         </div>
 
-        {/* Toolbar */}
         <SectionToolbar count={totalItems} onAdd={() => setAddOpen(true)} />
 
-        {/* Add modal */}
         <Modal open={addOpen} onClose={() => setAddOpen(false)}>
-          <ExpenseForm
-            onSubmit={handleAdd}
-            onCancel={() => setAddOpen(false)}
-          />
+          <ExpenseForm onSubmit={handleAdd} onCancel={() => setAddOpen(false)} />
         </Modal>
 
-        {/* Edit modal */}
         <Modal open={!!editing} onClose={() => setEditing(null)}>
           {editing && (
             <ExpenseForm
@@ -119,7 +98,6 @@ export default function Home() {
           )}
         </Modal>
 
-        {/* Loading */}
         {loading && (
           <div className="state">
             <div className="spinner" aria-label="Loading" />
@@ -127,42 +105,22 @@ export default function Home() {
           </div>
         )}
 
-        {/* Error */}
-        {error && !loading && (
-          <p className="error-text" role="alert">{error}</p>
-        )}
+        {error && !loading && (<p className="error-text" role="alert">{error}</p>)}
 
-        {/* Table + Pagination */}
         {!loading && !error && (
           <>
             <ExpenseTable
-              expenses={expenses.map((expense) => ({
-                ...expense,
-                date: expense.createdAt,
-              }))}
+              expenses={tableExpenses}
               onEdit={(expense) => setEditing(expense)}
               onDelete={handleDelete}
             />
 
-            <Pagination
-              page={page}
-              totalPages={totalPages}
-              totalItems={totalItems}
-              pageSize={pageSize}
-              onPageChange={setPage}
-            />
+            <Pagination page={page} totalPages={totalPages} totalItems={totalItems} pageSize={pageSize} onPageChange={setPage} />
           </>
         )}
 
         {/* Toast */}
-        {toast && (
-          <Toast
-            key={toast.id}
-            message={toast.message}
-            type={toast.type}
-            onDone={dismiss}
-          />
-        )}
+        {toast && (<Toast key={toast.id} message={toast.message} type={toast.type} onDone={dismiss} />)}
 
       </div>
     </div>

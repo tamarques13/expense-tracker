@@ -19,6 +19,8 @@
   justify-content: center;
   font-size: 14px;
   transition: background 100ms, color 100ms;
+  fill: none;
+  stroke: currentColor;
 }
 
 .action-btn:hover {

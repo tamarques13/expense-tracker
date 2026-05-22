@@ -1,4 +1,12 @@
-export function SectionToolbar({ count, onAdd }: { count: number; onAdd: () => void }) {
+import { PlusIcon } from "../Icons/ButtonIcons";
+
+interface SectionToolbarProps {
+    count: number;
+    onAdd: () => void;
+}
+
+export function SectionToolbar({ count, onAdd }: SectionToolbarProps) {
+
     return (
         <div className="section-toolbar">
             <div className="section-toolbar__left">
@@ -7,18 +15,7 @@ export function SectionToolbar({ count, onAdd }: { count: number; onAdd: () => v
             </div>
 
             <button className="btn btn--primary" onClick={onAdd}>
-                <svg
-                    width="14"
-                    height="14"
-                    viewBox="0 0 14 14"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    aria-hidden="true"
-                >
-                    <path d="M7 1v12M1 7h12" />
-                </svg>
+                <PlusIcon />
                 Add expense
             </button>
         </div>
